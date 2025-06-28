@@ -6,140 +6,242 @@
     <title>LinkedIn Post Generator - Newsec</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- REACT (for preview/gallery) -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- ... your existing styles here ... -->
     <style>
-      /* ... keep your tailwind+custom CSS here ... */
+        /* ... your styles, unchanged ... */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background-color: #F8F9FB; }
+        .newsec-blue { color: #0047AB; }
+        .newsec-bg { background-color: #0047AB; }
+        .newsec-light-bg { background-color: #E8F0FF; }
+        .card-shadow { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1); }
+        .card-shadow-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-shadow-hover:hover { box-shadow: 0 10px 30px rgba(0, 71, 171, 0.1); transform: translateY(-2px); }
+        .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-active { border-bottom: 2px solid #0047AB; color: #0047AB; }
+        .dot-pattern { background-image: radial-gradient(circle, #E0E7FF 1px, transparent 1px); background-size: 20px 20px; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 71, 171, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 71, 171, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 71, 171, 0); } }
+        .loading-bar { animation: loading 1.5s ease-in-out infinite; }
+        @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+        input:focus, textarea:focus { outline: none; border-color: #0047AB; box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1); }
+        button:active { transform: scale(0.98); }
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- ...access modal unchanged... -->
 
-<!-- ... Your existing main markup, steps, and forms here ... -->
+    <div id="mainApp" class="hidden">
+        <!-- ...header unchanged... -->
 
-<!-- NEW: LinkedIn Post Preview & Stock Image Gallery Root -->
-<div id="postPreviewRoot" class="max-w-xl mx-auto my-8"></div>
+        <main class="max-w-7xl mx-auto px-6 py-8">
+            <!-- ...progress steps unchanged... -->
 
-<!-- ... rest of your markup ... -->
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Left Column - Input -->
+                <!-- ...left column unchanged... -->
 
-<script>
-/* --- Your regular app logic: generatePost, etc... --- */
+                <!-- Center Column - Generated Content -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- ADD: LinkedIn Post Preview Card -->
+                    <div id="linkedinPreviewCard" class="hidden mb-4 fade-in"></div>
+                    <!-- /ADD -->
 
-window._postPreviewUpdate = () => {}; // placeholder
+                    <!-- Generated Post Card -->
+                    <!-- ...your "Generated Post" card (keep as fallback / for copy etc)... -->
 
-// Overwrite your displayPost function to also update the preview
-function displayPost(post) {
-    const postDiv = document.getElementById('generatedPost');
-    const fullText = post.full || (post.hook + post.body + post.cta + post.hashtags);
-    postDiv.innerHTML = `<div class="space-y-3 text-gray-700 whitespace-pre-line">${fullText}</div>`;
-    if (window._postPreviewUpdate) window._postPreviewUpdate({ postText: fullText });
-    document.getElementById('postStats').classList.remove('hidden');
-}
+                    <!-- ...refinement chat unchanged... -->
+                </div>
 
-// Also call this when image changes:
-function updatePreviewImage(url) {
-    if (window._postPreviewUpdate) window._postPreviewUpdate({ imageUrl: url });
-}
-</script>
+                <!-- Right Column - Visuals & Export -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Visual Tabs -->
+                    <div class="bg-white rounded-2xl card-shadow">
+                        <!-- ...visual tabs unchanged... -->
+                        <div id="stockContent" class="p-6">
+                            <div id="stockSuggestionsGallery" class="mb-4 hidden"></div>
+                            <div id="stockSuggestions" class="space-y-4">
+                                <div class="text-center py-8">
+                                    <p class="text-gray-500 text-sm">Generate a post to get photo suggestions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ...branded graphic unchanged... -->
+                    </div>
+                    <!-- ...export options unchanged... -->
+                </div>
+            </div>
+        </main>
+    </div>
 
-<!-- REACT GALLERY & LINKEDIN PREVIEW (NO JSX NEEDED) -->
-<script type="text/javascript">
-const { useState, useEffect } = React;
+    <!-- ...toast notification unchanged... -->
 
-// DUMMY stock images (replace with your Unsplash or brand images)
-const images = [
-    'https://images.unsplash.com/photo-1506765515384-028b60a970df?w=600',
-    'https://images.unsplash.com/photo-1522199710521-72d69614c702?w=600',
-    'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600',
-    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600',
-    'https://images.unsplash.com/photo-1581094651308-cadb47c147fa?w=600',
-    'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600'
-];
+    <script>
+        // == NEW: STOCK IMAGE DATA ==
+        // Replace these with your own images, or fetch from Unsplash/Pexels API for real demo!
+        const stockImages = [
+            {
+                url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+                title: "Modern sustainable office building"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
+                title: "Team collaboration in bright space"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1454023492550-5696f8ff10e1?auto=format&fit=crop&w=800&q=80",
+                title: "Nordic cityscape at golden hour"
+            }
+        ];
+        let selectedImageUrl = null; // Track selected image
 
-// Simulate "Newsec on-brand" - update with your real profile/logo
-const BRAND_PROFILE_IMG = 'https://newsec.com/favicon.ico';
-const BRAND_NAME = 'Newsec Team';
-const BRAND_TITLE = 'Nordic Real Estate Experts';
+        // ...[Keep your access control, tab switching, toast, word counter, clearInput, loadExample functions as is]...
 
-function ThumbnailGallery({ onSelect, selected }) {
-    return React.createElement('div', { className: 'grid grid-cols-3 gap-2 mb-2' },
-        images.map(url =>
-            React.createElement('img', {
-                key: url, src: url, alt: 'thumb',
-                onClick: () => onSelect(url),
-                className:
-                  "cursor-pointer object-cover w-full h-20 rounded transition ring-2 " +
-                  (selected === url ? "ring-blue-700" : "ring-transparent hover:ring-blue-400")
-            })
-        )
-    );
-}
+        // == UPDATE: Generate post (set selectedImageUrl = null when new post generated)
+        async function generatePost() {
+            selectedImageUrl = stockImages[0]?.url || null; // Default to first image
+            updateLinkedInPreview();
+            // ...[rest of your generatePost function, unchanged]...
+            const content = document.getElementById('emailContent').value;
+            if (!content) {
+                showToast('Please enter some content first');
+                return;
+            }
+            // ...loading spinner code as before...
+            document.getElementById('step2').classList.remove('bg-gray-200', 'text-gray-400');
+            document.getElementById('step2').classList.add('newsec-bg', 'text-white');
+            try {
+                const response = await fetch('/api/generate-post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: content })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Failed to generate post');
+                displayPost(data.post);
+                updateStats(data.post);
+                generateVisuals(data.post);
+                showToast('Post generated successfully!');
+            } catch (error) {
+                // ...fallback demo...
+                const post = createLinkedInPost(content);
+                displayPost(post);
+                updateStats(post);
+                generateVisuals(post);
+            }
+            // Always update preview after new post
+            updateLinkedInPreview();
+        }
 
-function LinkedInPostPreview({ profileImage, name, jobTitle, imageUrl, content }) {
-    return React.createElement('div', { className: 'bg-white rounded-2xl border border-gray-200 p-4 shadow-sm max-w-xl mx-auto text-sm' },
-        React.createElement('div', { className: 'flex space-x-3 items-center' },
-            React.createElement('img', {
-                src: profileImage, alt: name,
-                className: 'w-12 h-12 rounded-full object-cover'
-            }),
-            React.createElement('div', null,
-                React.createElement('h3', { className: 'font-semibold text-gray-800' }, name),
-                React.createElement('p', { className: 'text-gray-500 text-xs' }, jobTitle),
-                React.createElement('span', { className: 'text-gray-400 text-xs' }, 'Just now')
-            )
-        ),
-        imageUrl && React.createElement('img', {
-            src: imageUrl, alt: "Selected", className: 'w-full h-48 object-cover rounded mt-4 mb-2'
-        }),
-        React.createElement('p', { className: 'mt-2 whitespace-pre-line text-gray-800' }, content),
-        React.createElement('div', { className: 'mt-4 flex justify-around text-gray-600 border-t pt-2' },
-            ['Like', 'Comment', 'Share'].map(label =>
-                React.createElement('button', {
-                    key: label,
-                    className: 'flex items-center space-x-1 hover:text-blue-700 font-medium'
-                }, React.createElement('span', null, label))
-            )
-        )
-    );
-}
+        // == UPDATE: displayPost/postStats unchanged but call updateLinkedInPreview after displayPost
+        function displayPost(post) {
+            // [unchanged code ...]
+            const postDiv = document.getElementById('generatedPost');
+            const fullText = post.full || (post.hook + post.body + post.cta + post.hashtags);
+            postDiv.innerHTML = `
+                <div class="space-y-3 text-gray-700 whitespace-pre-line">
+                    ${fullText}
+                </div>
+            `;
+            document.getElementById('postStats').classList.remove('hidden');
+            // -- Add: update preview --
+            window.currentLinkedInPost = post; // Keep in global scope for preview
+            updateLinkedInPreview();
+        }
 
-function App() {
-    const [selectedImageUrl, setSelectedImageUrl] = useState('');
-    const [postText, setPostText] = useState('');
-    // Listen for post/image changes from outside
-    useEffect(() => {
-        window._postPreviewUpdate = (data = {}) => {
-            if (data.postText !== undefined) setPostText(data.postText);
-            if (data.imageUrl !== undefined) setSelectedImageUrl(data.imageUrl);
-        };
-        // initial value from DOM if present
-        const el = document.getElementById('generatedPost');
-        if (el) setPostText(el.innerText);
-        return () => { window._postPreviewUpdate = () => {}; };
-    }, []);
-    return React.createElement('div', null,
-        React.createElement(ThumbnailGallery, { onSelect: setSelectedImageUrl, selected: selectedImageUrl }),
-        React.createElement(LinkedInPostPreview, {
-            profileImage: BRAND_PROFILE_IMG,
-            name: BRAND_NAME,
-            jobTitle: BRAND_TITLE,
-            imageUrl: selectedImageUrl,
-            content: postText
-        })
-    );
-}
+        // == NEW: Render the LinkedIn-style post preview ==
+        function updateLinkedInPreview() {
+            const card = document.getElementById('linkedinPreviewCard');
+            const post = window.currentLinkedInPost;
+            if (!post) { card.classList.add('hidden'); return; }
+            card.classList.remove('hidden');
+            // Clean up text for preview
+            const content = (post.full || (post.hook + post.body + post.cta + post.hashtags)).trim();
+            card.innerHTML = `
+            <div class="max-w-xl mx-auto bg-white border rounded-xl shadow-lg p-5">
+                <div class="flex items-center mb-3">
+                    <img src="https://www.newsec.com/img/Newsec-Logotype-blue.svg" alt="Newsec" class="w-10 h-10 bg-white rounded-full border border-blue-200 object-contain" onerror="this.src='https://i.imgur.com/s3p3Cyk.png';">
+                    <div class="ml-3">
+                        <div class="font-bold text-gray-800">Newsec Team</div>
+                        <div class="text-xs text-gray-500">Real Estate Experts • Just now</div>
+                    </div>
+                </div>
+                <div class="mb-3 whitespace-pre-line text-gray-800" style="font-family: system-ui;">${content}</div>
+                ${selectedImageUrl ? `<div class="mb-3"><img src="${selectedImageUrl}" alt="" class="w-full max-h-64 object-cover rounded-lg border"></div>` : ''}
+                <div class="flex justify-between text-sm text-gray-500 border-t pt-2 mt-2">
+                    <span>👍 Like</span>
+                    <span>💬 Comment</span>
+                    <span>🔗 Share</span>
+                </div>
+            </div>
+            `;
+        }
 
-ReactDOM.createRoot(document.getElementById('postPreviewRoot')).render(React.createElement(App));
-</script>
+        // == UPDATE: Generate visuals now renders stock image gallery ==
+        function generateVisuals(post) {
+            // -- Stock image gallery: show thumbnails, let user select, update preview --
+            const stockDiv = document.getElementById('stockSuggestions');
+            const stockGalleryDiv = document.getElementById('stockSuggestionsGallery');
+            stockDiv.innerHTML = "";
+            stockGalleryDiv.innerHTML = `
+                <div class="flex gap-3 overflow-x-auto pb-2">
+                    ${stockImages.map(img => `
+                        <button onclick="selectStockImage('${img.url}')" class="flex-shrink-0 border-2 rounded-lg p-1 ${selectedImageUrl===img.url?'border-blue-600':'border-transparent'} hover:border-blue-400">
+                            <img src="${img.url}" alt="" class="w-24 h-24 object-cover rounded-lg">
+                            <div class="text-xs text-center mt-1 text-gray-700">${img.title}</div>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            stockGalleryDiv.classList.remove('hidden');
+            // Default select first image
+            if (!selectedImageUrl) selectStockImage(stockImages[0].url);
+            // Branded graphic (keep unchanged)
+            const headline = post.hook ? post.hook.replace(/[🏢!]/g, '').trim() : 'Transforming Real Estate';
+            const brandedDiv = document.getElementById('brandedGraphic');
+            brandedDiv.innerHTML = `
+                <div class="absolute inset-0 dot-pattern opacity-10"></div>
+                <div class="relative text-center text-white p-8 z-10">
+                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                        <span class="newsec-blue font-bold text-3xl">N</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">${headline}</h3>
+                    <p class="text-blue-100">Transforming Real Estate</p>
+                </div>
+            `;
+            document.getElementById('step3').classList.remove('bg-gray-200', 'text-gray-400');
+            document.getElementById('step3').classList.add('newsec-bg', 'text-white');
+        }
 
-<script>
-/* After React loads, make sure whenever user generates a post, the preview updates.
-   In your generatePost() and generateVisuals() just call:
-     window._postPreviewUpdate({ postText: newPostText });
-   And when selecting a stock image, call:
-     window._postPreviewUpdate({ imageUrl: newImageUrl });
-*/
-</script>
+        // == NEW: When user clicks a stock image thumbnail ==
+        function selectStockImage(url) {
+            selectedImageUrl = url;
+            // Re-render stock image gallery to update border
+            generateVisuals(window.currentLinkedInPost || {});
+            // Update LinkedIn preview
+            updateLinkedInPreview();
+        }
 
+        // ...all your existing chat, download, email, etc functions, unchanged...
+
+        // Enter key support
+        document.getElementById('accessCode').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkAccess();
+        });
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChat();
+        });
+
+        // == NEW: Expose selectStockImage to window (needed for inline HTML onclick) ==
+        window.selectStockImage = selectStockImage;
+
+    </script>
 </body>
 </html>
