@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -487,7 +488,7 @@
             showToast('Example content loaded');
         }
 
-        // Generate post
+        // Generate post - NOW WITH REAL API INTEGRATION
         async function generatePost() {
             const content = document.getElementById('emailContent').value;
             if (!content) {
@@ -509,17 +510,41 @@
             document.getElementById('step2').classList.remove('bg-gray-200', 'text-gray-400');
             document.getElementById('step2').classList.add('newsec-bg', 'text-white');
 
-            // Simulate API call
-            setTimeout(() => {
+            try {
+                // Call the API endpoint
+                const response = await fetch('/api/generate-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: content })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to generate post');
+                }
+
+                // Use the real generated post
+                displayPost(data.post);
+                updateStats(data.post);
+                generateVisuals(data.post);
+                showToast('Post generated successfully!');
+                
+            } catch (error) {
+                console.error('Error generating post:', error);
+                showToast('Error generating post. Using demo mode.');
+                
+                // Fallback to demo mode
                 const post = createLinkedInPost(content);
                 displayPost(post);
                 updateStats(post);
                 generateVisuals(post);
-                showToast('Post generated successfully!');
-            }, 2000);
+            }
         }
 
-        // Create LinkedIn post
+        // Create LinkedIn post (DEMO MODE FALLBACK)
         function createLinkedInPost(content) {
             // Extract key points
             const sentences = content.split('.').filter(s => s.trim());
@@ -555,15 +580,16 @@ What role do you think sustainable buildings play in creating better cities? Sha
             };
         }
 
-        // Display post
+        // Display post - UPDATED TO HANDLE API RESPONSE
         function displayPost(post) {
             const postDiv = document.getElementById('generatedPost');
+            
+            // Handle both API response and demo format
+            const fullText = post.full || (post.hook + post.body + post.cta + post.hashtags);
+            
             postDiv.innerHTML = `
-                <div class="space-y-3 text-gray-700">
-                    <p class="font-medium">${post.hook}</p>
-                    <div class="whitespace-pre-line">${post.body}</div>
-                    <p class="font-medium">${post.cta}</p>
-                    <p class="text-blue-600">${post.hashtags}</p>
+                <div class="space-y-3 text-gray-700 whitespace-pre-line">
+                    ${fullText}
                 </div>
             `;
             
@@ -572,7 +598,7 @@ What role do you think sustainable buildings play in creating better cities? Sha
 
         // Update stats
         function updateStats(post) {
-            const fullText = post.full;
+            const fullText = post.full || (post.hook + post.body + post.cta + post.hashtags);
             const charCount = fullText.length;
             const hashtagCount = (fullText.match(/#/g) || []).length;
             const emojiCount = (fullText.match(/[\u{1F300}-\u{1F9FF}]/gu) || []).length;
@@ -615,7 +641,7 @@ What role do you think sustainable buildings play in creating better cities? Sha
             `).join('');
 
             // Branded graphic
-            const headline = post.hook.replace(/[🏢!]/g, '').trim();
+            const headline = post.hook ? post.hook.replace(/[🏢!]/g, '').trim() : 'Transforming Real Estate';
             const brandedDiv = document.getElementById('brandedGraphic');
             brandedDiv.innerHTML = `
                 <div class="absolute inset-0 dot-pattern opacity-10"></div>
@@ -646,7 +672,7 @@ What role do you think sustainable buildings play in creating better cities? Sha
         }
 
         // Chat functionality
-        function sendChat() {
+        async function sendChat() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
             if (!message) return;
@@ -668,7 +694,7 @@ What role do you think sustainable buildings play in creating better cities? Sha
             input.value = '';
             chatDiv.scrollTop = chatDiv.scrollHeight;
 
-            // Simulate AI response
+            // Simulate AI response (in production, this would call an API)
             setTimeout(() => {
                 chatDiv.innerHTML += `
                     <div class="flex items-start space-x-3 fade-in">
