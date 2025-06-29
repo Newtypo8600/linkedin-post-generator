@@ -1,5 +1,17 @@
 {
-  "name": "linkedin-post-generator",
-  "version": "1.0.0",
-  "description": "Newsec LinkedIn Post Generator"
+  "name": "linkedin-post-generator-v2",
+  "version": "2.0.0",
+  "description": "Enhanced LinkedIn Post Generator with AI training and multi-language support",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0",
+    "node-fetch": "^3.3.2",
+    "formidable": "^3.5.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
