@@ -270,7 +270,18 @@
                             Add LinkedIn posts to train the AI on your writing style
                         </p>
                         
-                        <div class="space-y-3">
+                        <!-- Toggle between URL and Text input -->
+                        <div class="flex space-x-2 mb-3">
+                            <button onclick="toggleInputMethod('url')" id="urlMethodBtn" class="flex-1 py-1 px-3 rounded text-sm bg-gray-800">
+                                <i class="fas fa-link mr-1"></i>URL
+                            </button>
+                            <button onclick="toggleInputMethod('text')" id="textMethodBtn" class="flex-1 py-1 px-3 rounded text-sm">
+                                <i class="fas fa-font mr-1"></i>Text
+                            </button>
+                        </div>
+                        
+                        <!-- URL Input (default) -->
+                        <div id="urlInput" class="space-y-3">
                             <input 
                                 id="linkedinUrl"
                                 type="text"
@@ -278,11 +289,25 @@
                                 placeholder="Paste LinkedIn post URL..."
                             >
                             <button onclick="addLinkedInPost()" class="secondary-button w-full py-2 rounded-lg">
-                                <i class="fas fa-plus mr-2"></i>Add Post
+                                <i class="fas fa-plus mr-2"></i>Add Post from URL
                             </button>
                         </div>
                         
-                        <div id="trainedPosts" class="mt-4 space-y-2"></div>
+                        <!-- Text Input (hidden by default) -->
+                        <div id="textInput" class="space-y-3 hidden">
+                            <textarea 
+                                id="linkedinText"
+                                class="w-full p-3 rounded-lg h-32 resize-none"
+                                placeholder="Paste your LinkedIn post text here..."
+                            ></textarea>
+                            <button onclick="addLinkedInText()" class="secondary-button w-full py-2 rounded-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Post from Text
+                            </button>
+                        </div>
+                        
+                        <div id="trainedPosts" class="mt-4 space-y-2">
+                            <p class="text-xs text-gray-500">Added posts: <span id="postCount">0</span>/20</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -512,6 +537,7 @@
         // Store current language globally
         let currentLanguage = 'en';
         let selectedImageUrl = null;
+        let trainedPosts = []; // Store training posts
 
         // Login functionality
         function checkLogin() {
@@ -553,6 +579,112 @@
             }
         }
 
+        // Toggle between URL and Text input methods
+        function toggleInputMethod(method) {
+            if (method === 'url') {
+                document.getElementById('urlInput').classList.remove('hidden');
+                document.getElementById('textInput').classList.add('hidden');
+                document.getElementById('urlMethodBtn').classList.add('bg-gray-800');
+                document.getElementById('textMethodBtn').classList.remove('bg-gray-800');
+            } else {
+                document.getElementById('textInput').classList.remove('hidden');
+                document.getElementById('urlInput').classList.add('hidden');
+                document.getElementById('textMethodBtn').classList.add('bg-gray-800');
+                document.getElementById('urlMethodBtn').classList.remove('bg-gray-800');
+            }
+        }
+
+        // Add LinkedIn post from URL
+        async function addLinkedInPost() {
+            const url = document.getElementById('linkedinUrl').value.trim();
+            if (!url) return;
+            
+            if (trainedPosts.length >= 20) {
+                alert('Maximum 20 posts allowed for training');
+                return;
+            }
+
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            btn.disabled = true;
+
+            try {
+                // Call API to parse LinkedIn URL
+                const response = await fetch('/api/parse-linkedin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.postContent) {
+                    addTrainedPost(data.postContent, url);
+                    document.getElementById('linkedinUrl').value = '';
+                } else {
+                    throw new Error('Could not parse LinkedIn post');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Could not fetch LinkedIn post. Please try the text input method instead.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Add LinkedIn post from text
+        function addLinkedInText() {
+            const text = document.getElementById('linkedinText').value.trim();
+            if (!text) return;
+            
+            if (trainedPosts.length >= 20) {
+                alert('Maximum 20 posts allowed for training');
+                return;
+            }
+
+            addTrainedPost(text, 'Manual entry');
+            document.getElementById('linkedinText').value = '';
+        }
+
+        // Add post to training list
+        function addTrainedPost(content, source) {
+            trainedPosts.push({ content, source });
+            
+            const postsDiv = document.getElementById('trainedPosts');
+            const postItem = document.createElement('div');
+            postItem.className = 'flex items-start space-x-2 p-2 bg-gray-800 rounded';
+            postItem.innerHTML = `
+                <div class="flex-1">
+                    <p class="text-xs text-gray-400 mb-1">${source}</p>
+                    <p class="text-sm line-clamp-2">${content.substring(0, 100)}...</p>
+                </div>
+                <button onclick="removeTrainedPost(${trainedPosts.length - 1}, this)" class="text-red-400 hover:text-red-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            postsDiv.insertBefore(postItem, postsDiv.lastElementChild);
+            
+            // Update count
+            document.getElementById('postCount').textContent = trainedPosts.length;
+        }
+
+        // Remove trained post
+        function removeTrainedPost(index, button) {
+            trainedPosts.splice(index, 1);
+            button.parentElement.remove();
+            document.getElementById('postCount').textContent = trainedPosts.length;
+            
+            // Re-index remaining posts
+            const posts = document.querySelectorAll('#trainedPosts > div:not(:last-child)');
+            posts.forEach((post, i) => {
+                const btn = post.querySelector('button');
+                btn.setAttribute('onclick', `removeTrainedPost(${i}, this)`);
+            });
+        }
+
         // Word counter
         document.getElementById('contentInput').addEventListener('input', function() {
             const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
@@ -565,25 +697,7 @@
             document.getElementById('wordCount').textContent = '0';
         }
 
-        // Add LinkedIn post for training
-        function addLinkedInPost() {
-            const url = document.getElementById('linkedinUrl').value;
-            if (!url) return;
-            
-            const postsDiv = document.getElementById('trainedPosts');
-            const postItem = document.createElement('div');
-            postItem.className = 'flex items-center justify-between p-2 bg-gray-800 rounded';
-            postItem.innerHTML = `
-                <span class="text-sm truncate flex-1">${url}</span>
-                <button onclick="this.parentElement.remove()" class="text-red-400 ml-2">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            postsDiv.appendChild(postItem);
-            document.getElementById('linkedinUrl').value = '';
-        }
-
-        // Generate post
+        // Generate post with training data
         async function generatePost() {
             const content = document.getElementById('contentInput').value;
             if (!content) {
@@ -608,7 +722,8 @@
                         content,
                         language: currentLanguage,
                         postType,
-                        style
+                        style,
+                        trainedPosts: style === 'custom' ? trainedPosts : []
                     })
                 });
 
