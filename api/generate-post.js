@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { content, language, postType, style } = req.body;
+    const { content, language, postType, style, trainedPosts = [] } = req.body;
     
     // Language prompts
     const languageInstructions = {
@@ -21,15 +21,30 @@ export default async function handler(req, res) {
       inspirational: "Create an uplifting post that motivates and inspires. Include a personal story or anecdote if relevant.",
       announcement: "Create an announcement post that generates excitement. Lead with the news and explain why it matters.",
       "thought-leadership": "Create a thought-provoking post that positions Newsec as an industry leader. Include insights and future predictions.",
-      "case-study": "Create a case study post that showcases success. Include specific metrics and results."
+      "case-study": "Create a case study post that showcases success. Include specific metrics and results.",
+      educational: "Create an educational post that teaches something valuable about real estate or sustainability.",
+      inspirational: "Create an inspirational post that motivates and uplifts the audience."
     };
 
     // Style instructions
-    const styleInstructions = {
+    let styleInstructions = {
       professional: "Use a formal, authoritative tone. Be concise and fact-driven.",
       conversational: "Use a friendly, approachable tone. Write as if talking to a colleague.",
       custom: "Match the writing style from the uploaded examples, maintaining consistent voice and structure."
     };
+
+    // If custom style is selected and training posts are provided
+    let customStylePrompt = '';
+    if (style === 'custom' && trainedPosts.length > 0) {
+      const examplePosts = trainedPosts.map(p => p.content).join('\n\n---\n\n');
+      customStylePrompt = `\n\nHere are example posts to match the style of:\n\n${examplePosts}\n\n
+      Analyze these posts and match their:
+      - Tone and voice
+      - Post structure and length
+      - Use of emojis and formatting
+      - Hashtag patterns
+      - Opening and closing style`;
+    }
 
     // Build the system prompt
     const systemPrompt = `You are a LinkedIn content expert for Newsec, a leading real estate and energy transition company in the Nordic region. 
@@ -37,6 +52,7 @@ export default async function handler(req, res) {
     ${languageInstructions[language]}
     ${postTypeInstructions[postType]}
     ${styleInstructions[style]}
+    ${customStylePrompt}
     
     Guidelines for all posts:
     - Start with an attention-grabbing hook
