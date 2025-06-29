@@ -9,6 +9,21 @@
   "dependencies": {
     "sharp": "^0.33.0",
     "node-fetch": "^3.3.2",
+    "formidable": "^3.5.1",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "engines": {
+    "node": ">=18.0.{
+  "name": "linkedin-post-generator-v2",
+  "version": "2.0.0",
+  "description": "Enhanced LinkedIn Post Generator with AI training and multi-language support",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0",
+    "node-fetch": "^3.3.2",
     "formidable": "^3.5.1"
   },
   "engines": {
