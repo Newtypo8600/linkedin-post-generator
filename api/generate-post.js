@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { content, language, postType, style, trainedPosts = [] } = req.body;
+    const { content, language, postType, style, trainedPosts = [], formatting = false } = req.body;
     
     // Language prompts
     const languageInstructions = {
@@ -43,10 +43,11 @@ export default async function handler(req, res) {
       - Post structure and length
       - Use of emojis and formatting
       - Hashtag patterns
-      - Opening and closing style`;
+      - Opening and closing style
+      - Line break patterns and paragraph structure`;
     }
 
-    // Build the system prompt
+    // Build the system prompt with formatting instructions
     const systemPrompt = `You are a LinkedIn content expert for Newsec, a leading real estate and energy transition company in the Nordic region. 
     
     ${languageInstructions[language]}
@@ -63,7 +64,16 @@ export default async function handler(req, res) {
     - Focus on Newsec's key themes: sustainability, innovation, real estate excellence, energy transition
     - Maintain Newsec's professional yet approachable brand voice
     
-    Format the post with proper line breaks for readability on LinkedIn.`;
+    IMPORTANT LinkedIn formatting best practices:
+    - Use SHORT paragraphs (2-3 sentences max)
+    - Add a blank line between paragraphs for readability
+    - Use line breaks before and after lists
+    - Hook should be on its own line
+    - CTA question should be on its own line
+    - Hashtags should be on the last line
+    - Break up long sections with emojis or bullet points
+    
+    Format the post with proper line breaks for optimal readability on LinkedIn.`;
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
