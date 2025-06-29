@@ -12,6 +12,10 @@ export default async function handler(req, res) {
     // Use the environment variable you set in Vercel
     const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
     
+    // Log for debugging (remove in production)
+    console.log('Unsplash key exists:', !!UNSPLASH_ACCESS_KEY);
+    console.log('Query:', query);
+    
     if (!UNSPLASH_ACCESS_KEY) {
       console.error('Unsplash access key not configured');
       // Return mock data if no API key
@@ -21,17 +25,22 @@ export default async function handler(req, res) {
       });
     }
 
-    const response = await fetch(
-      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=12&page=${page}&orientation=landscape`,
-      {
-        headers: {
-          'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
-        }
+    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=12&page=${page}&orientation=landscape`;
+    console.log('Fetching from:', url);
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
       }
-    );
+    });
 
+    // Log the response status
+    console.log('Unsplash response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error('Unsplash API error');
+      const errorText = await response.text();
+      console.error('Unsplash API error:', response.status, errorText);
+      throw new Error(`Unsplash API error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -46,18 +55,21 @@ export default async function handler(req, res) {
       alt: photo.alt_description || photo.description || query
     }));
 
+    console.log('Returning', results.length, 'results');
+    
     res.status(200).json({
       success: true,
       results: results
     });
 
   } catch (error) {
-    console.error('Unsplash search error:', error);
+    console.error('Unsplash search error:', error.message);
     
-    // Fallback to mock data on error
+    // Return mock data on error instead of failing
     res.status(200).json({
       success: true,
-      results: getMockImages(req.body.query || 'office building')
+      results: getMockImages(req.body.query || 'office building'),
+      error: error.message // Include error for debugging
     });
   }
 }
@@ -116,10 +128,13 @@ function getMockImages(query) {
   ];
   
   // Simple filtering based on query
-  if (query.toLowerCase().includes('green') || query.toLowerCase().includes('sustain')) {
+  const lowerQuery = query.toLowerCase();
+  if (lowerQuery.includes('green') || lowerQuery.includes('sustain')) {
     return baseImages.slice(0, 3);
-  } else if (query.toLowerCase().includes('team') || query.toLowerCase().includes('meeting')) {
+  } else if (lowerQuery.includes('team') || lowerQuery.includes('meeting')) {
     return baseImages.slice(2, 5);
+  } else if (lowerQuery.includes('modern') || lowerQuery.includes('architect')) {
+    return baseImages.slice(4, 6);
   }
   
   return baseImages;
