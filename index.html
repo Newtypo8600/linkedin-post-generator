@@ -548,15 +548,11 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         // Store current language globally
         let currentLanguage = 'en';
         let selectedImageUrl = null;
         let trainedPosts = [];
-        
-        // Unsplash API configuration
-        const UNSPLASH_ACCESS_KEY = 'YOUR_UNSPLASH_ACCESS_KEY'; // You'll need to add this
 
         // Login functionality
         function checkLogin() {
@@ -869,50 +865,36 @@
             resultsDiv.innerHTML = '<div class="col-span-full text-center py-8 loading-dots">Searching</div>';
             
             try {
-                // For demo, using mock data. In production, uncomment the API call below
-                // const response = await axios.get(`https://api.unsplash.com/search/photos`, {
-                //     params: {
-                //         query: query,
-                //         per_page: 12,
-                //         orientation: 'landscape'
-                //     },
-                //     headers: {
-                //         Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`
-                //     }
-                // });
-                
-                // Mock response for demo
-                const mockImages = [
-                    { urls: { small: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300', regular: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800' }},
-                    { urls: { small: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=300', regular: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800' }},
-                    { urls: { small: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=300', regular: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800' }},
-                    { urls: { small: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=300', regular: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800' }},
-                    { urls: { small: 'https://images.unsplash.com/photo-1497366412874-3415097a27e7?w=300', regular: 'https://images.unsplash.com/photo-1497366412874-3415097a27e7?w=800' }},
-                    { urls: { small: 'https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?w=300', regular: 'https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?w=800' }}
-                ];
-                
-                // Simulate search by filtering based on query
-                const results = query.toLowerCase().includes('sustain') || query.toLowerCase().includes('green') 
-                    ? mockImages.slice(0, 3) 
-                    : mockImages;
-                
-                resultsDiv.innerHTML = '';
-                results.forEach((image) => {
-                    const imgDiv = document.createElement('div');
-                    imgDiv.className = 'cursor-pointer border-2 border-gray-200 rounded-lg overflow-hidden hover:border-purple-400 transition image-hover';
-                    imgDiv.innerHTML = `<img src="${image.urls.small}" class="w-full h-32 object-cover">`;
-                    imgDiv.onclick = function() {
-                        selectedImageUrl = image.urls.regular;
-                        document.getElementById('selectedImage').src = selectedImageUrl;
-                        document.getElementById('selectedImageContainer').classList.remove('hidden');
-                        closeUnsplashSearch();
-                    };
-                    resultsDiv.appendChild(imgDiv);
+                // Call our API endpoint instead of Unsplash directly
+                const response = await fetch('/api/search-unsplash', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
                 });
+                
+                const data = await response.json();
+                
+                if (data.success && data.results) {
+                    resultsDiv.innerHTML = '';
+                    data.results.forEach((image) => {
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = 'cursor-pointer border-2 border-gray-200 rounded-lg overflow-hidden hover:border-purple-400 transition image-hover';
+                        imgDiv.innerHTML = `<img src="${image.urls.small}" alt="${image.alt}" class="w-full h-32 object-cover">`;
+                        imgDiv.onclick = function() {
+                            selectedImageUrl = image.urls.regular;
+                            document.getElementById('selectedImage').src = selectedImageUrl;
+                            document.getElementById('selectedImageContainer').classList.remove('hidden');
+                            closeUnsplashSearch();
+                        };
+                        resultsDiv.appendChild(imgDiv);
+                    });
+                } else {
+                    throw new Error('No results');
+                }
                 
             } catch (error) {
                 console.error('Error searching Unsplash:', error);
-                resultsDiv.innerHTML = '<div class="col-span-full text-center py-8 text-red-600">Error loading images</div>';
+                resultsDiv.innerHTML = '<div class="col-span-full text-center py-8 text-red-600">Error loading images. Please try again.</div>';
             }
         }
 
