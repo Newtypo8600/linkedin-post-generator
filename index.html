@@ -7,731 +7,666 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        /* Newsec Brand Colors */
-        :root {
-            --newsec-blue: #0047AB;
-            --newsec-dark-blue: #002E6D;
-            --newsec-light-blue: #E8F0FF;
-            --newsec-gray: #6B7280;
-            --newsec-light-gray: #F9FAFB;
+        body {
+            background: #0A0A0A;
         }
         
-        .newsec-bg {
-            background-color: var(--newsec-blue);
+        /* Gradient backgrounds */
+        .gradient-border {
+            background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
+            padding: 1px;
         }
         
-        .newsec-text {
-            color: var(--newsec-blue);
+        .gradient-text {
+            background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        /* Flow Steps */
-        .step-inactive {
-            background-color: #E5E7EB;
-            color: #9CA3AF;
+        .gradient-bg {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
         }
         
-        .step-active {
-            background-color: var(--newsec-blue);
-            color: white;
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
         
-        .step-complete {
-            background-color: #10B981;
-            color: white;
+        /* Modern card style */
+        .modern-card {
+            background: #111111;
+            border: 1px solid #1F2937;
+            border-radius: 16px;
         }
         
-        /* LinkedIn Post Styles */
-        .linkedin-post {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E5E7EB;
+        /* LinkedIn post preview */
+        .linkedin-preview {
+            background: #1B1B1B;
+            border: 1px solid #2D2D2D;
+            border-radius: 12px;
         }
         
-        .linkedin-avatar {
-            width: 48px;
-            height: 48px;
-        }
-        
-        /* Rich Text Editor */
-        .post-editor {
-            min-height: 200px;
-            outline: none;
-        }
-        
-        .post-editor:focus {
-            border-color: var(--newsec-blue);
-        }
-        
-        /* Image Grid */
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-        
-        .image-option {
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .image-option:hover {
-            transform: scale(1.05);
-            border-color: var(--newsec-blue);
-        }
-        
-        .image-option.selected {
-            border-color: var(--newsec-blue);
-            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
-        }
-        
-        /* Smooth transitions */
-        .smooth-transition {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Loading Animation */
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--newsec-blue);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Custom Scrollbar */
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
         
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #1a1a1a;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: #888;
+            background: #4B5563;
             border-radius: 4px;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+        /* Loading animation */
+        .loading-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        
+        /* Image grid hover effect */
+        .image-hover {
+            transition: all 0.3s;
+        }
+        
+        .image-hover:hover {
+            transform: scale(1.05);
+            border-color: #3B82F6;
+        }
+        
+        /* Input styles */
+        input, textarea, select {
+            background: #1a1a1a;
+            border: 1px solid #2D2D2D;
+            color: white;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Button styles */
+        .primary-button {
+            background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
+            transition: all 0.3s;
+        }
+        
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .secondary-button {
+            background: #1F2937;
+            border: 1px solid #374151;
+            transition: all 0.3s;
+        }
+        
+        .secondary-button:hover {
+            background: #374151;
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 newsec-bg rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-xl">N</span>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-semibold text-gray-900">LinkedIn Post Generator</h1>
-                        <p class="text-sm text-gray-500">AI-powered content creation for Newsec</p>
-                    </div>
+<body class="text-white">
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+        <div class="modern-card p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white font-bold text-3xl">N</span>
                 </div>
-                <button onclick="showSettings()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-cog text-xl"></i>
-                </button>
+                <h2 class="text-2xl font-bold mb-2">Welcome to Newsec AI</h2>
+                <p class="text-gray-400">Enter password to access</p>
             </div>
-        </div>
-    </header>
-
-    <!-- Progress Steps -->
-    <div class="bg-white border-b">
-        <div class="max-w-4xl mx-auto px-4 py-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <div id="step1Circle" class="w-10 h-10 step-active rounded-full flex items-center justify-center font-medium">
-                        <i class="fas fa-edit"></i>
-                    </div>
-                    <span class="ml-3 font-medium">Configure Post</span>
-                </div>
-                <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
-                <div class="flex items-center">
-                    <div id="step2Circle" class="w-10 h-10 step-inactive rounded-full flex items-center justify-center font-medium">
-                        <i class="fas fa-magic"></i>
-                    </div>
-                    <span class="ml-3 font-medium text-gray-400">Edit & Enhance</span>
-                </div>
-            </div>
+            
+            <input 
+                type="password" 
+                id="loginPassword" 
+                class="w-full p-3 rounded-lg mb-4"
+                placeholder="Enter password"
+                onkeypress="if(event.key==='Enter') checkLogin()"
+            >
+            
+            <button onclick="checkLogin()" class="primary-button w-full py-3 rounded-lg font-semibold text-white">
+                Access Platform
+            </button>
+            
+            <p id="loginError" class="text-red-500 text-sm mt-4 text-center hidden">
+                Incorrect password. Please try again.
+            </p>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Step 1: Configuration -->
-        <div id="step1" class="space-y-6">
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">N</span>
+                        </div>
+                        <h1 class="text-xl font-semibold">Newsec AI Post Generator</h1>
+                    </div>
+                    
+                    <nav class="flex items-center space-x-6">
+                        <button onclick="showStep(1)" id="navStep1" class="text-blue-400 font-medium">
+                            <i class="fas fa-edit mr-2"></i>Create
+                        </button>
+                        <button onclick="showStep(2)" id="navStep2" class="text-gray-400 font-medium">
+                            <i class="fas fa-magic mr-2"></i>Enhance
+                        </button>
+                        <button onclick="logout()" class="text-gray-400 hover:text-white">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Step 1: Create Post -->
+        <div id="step1" class="max-w-7xl mx-auto px-6 py-8">
             <div class="grid lg:grid-cols-3 gap-6">
-                <!-- Input Content -->
+                <!-- Left Column -->
                 <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">Content Input</h2>
+                    <!-- Content Input -->
+                    <div class="modern-card p-6">
+                        <h2 class="text-xl font-semibold mb-4 gradient-text">Content Inspiration</h2>
                         <textarea 
                             id="contentInput"
-                            class="w-full p-4 border rounded-lg resize-none h-48"
-                            placeholder="Paste your email content or write your ideas here..."
+                            class="w-full p-4 rounded-lg h-48 resize-none"
+                            placeholder="Paste your email content or ideas here..."
                         ></textarea>
-                        <div class="mt-2 text-sm text-gray-500">
-                            <span id="wordCount">0</span> words
+                        <div class="mt-3 flex justify-between items-center">
+                            <span class="text-sm text-gray-400">
+                                <span id="wordCount">0</span> words
+                            </span>
+                            <button onclick="clearContent()" class="text-sm text-gray-400 hover:text-white">
+                                Clear
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Configuration Options -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">Post Configuration</h2>
+                    <!-- Configuration -->
+                    <div class="modern-card p-6">
+                        <h2 class="text-xl font-semibold mb-4 gradient-text">Post Configuration</h2>
                         <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Language Selection -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <label class="block text-sm font-medium mb-2 text-gray-300">
                                     <i class="fas fa-language mr-2"></i>Language
                                 </label>
-                                <select id="language" class="w-full p-2 border rounded-lg">
+                                <select id="language" class="w-full p-3 rounded-lg">
                                     <option value="en">English</option>
                                     <option value="da">Dansk</option>
                                     <option value="sv">Svenska</option>
                                     <option value="fi">Suomi</option>
                                 </select>
                             </div>
-
-                            <!-- Post Type -->
+                            
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    <i class="fas fa-lightbulb mr-2"></i>Post Type
+                                <label class="block text-sm font-medium mb-2 text-gray-300">
+                                    <i class="fas fa-bullhorn mr-2"></i>Post Type
                                 </label>
-                                <select id="postType" class="w-full p-2 border rounded-lg">
-                                    <option value="instructive">Instructive</option>
-                                    <option value="inspirational">Inspirational</option>
+                                <select id="postType" class="w-full p-3 rounded-lg">
                                     <option value="announcement">Announcement</option>
                                     <option value="thought-leadership">Thought Leadership</option>
                                     <option value="case-study">Case Study</option>
+                                    <option value="educational">Educational</option>
+                                    <option value="inspirational">Inspirational</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Style Selection & Training -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- Tone Selection -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">Writing Style</h2>
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Style Selection -->
+                    <div class="modern-card p-6">
+                        <h2 class="text-xl font-semibold mb-4 gradient-text">Writing Style</h2>
                         <div class="space-y-3">
-                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <label class="flex items-center p-3 rounded-lg border border-gray-700 cursor-pointer hover:border-blue-500 transition">
                                 <input type="radio" name="style" value="professional" checked class="mr-3">
                                 <div>
                                     <div class="font-medium">Professional</div>
-                                    <div class="text-sm text-gray-500">Formal and authoritative</div>
+                                    <div class="text-sm text-gray-400">Formal and authoritative</div>
                                 </div>
                             </label>
-                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <label class="flex items-center p-3 rounded-lg border border-gray-700 cursor-pointer hover:border-blue-500 transition">
                                 <input type="radio" name="style" value="conversational" class="mr-3">
                                 <div>
                                     <div class="font-medium">Conversational</div>
-                                    <div class="text-sm text-gray-500">Friendly and approachable</div>
+                                    <div class="text-sm text-gray-400">Friendly and engaging</div>
                                 </div>
                             </label>
-                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <label class="flex items-center p-3 rounded-lg border border-gray-700 cursor-pointer hover:border-blue-500 transition">
                                 <input type="radio" name="style" value="custom" class="mr-3">
                                 <div>
                                     <div class="font-medium">Custom Style</div>
-                                    <div class="text-sm text-gray-500">Use your trained style</div>
+                                    <div class="text-sm text-gray-400">Based on your examples</div>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <!-- Style Training -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">Train Custom Style</h2>
-                        <p class="text-sm text-gray-600 mb-4">Upload 5-20 of your best LinkedIn posts to train the AI on your writing style.</p>
+                    <div class="modern-card p-6">
+                        <h2 class="text-xl font-semibold mb-4 gradient-text">Train on Your Posts</h2>
+                        <p class="text-sm text-gray-400 mb-4">
+                            Add LinkedIn posts to train the AI on your writing style
+                        </p>
+                        
                         <div class="space-y-3">
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 cursor-pointer" onclick="document.getElementById('styleUpload').click()">
-                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
-                                <p class="text-sm text-gray-600">Click to upload posts</p>
-                                <input type="file" id="styleUpload" multiple accept=".txt,.pdf" class="hidden">
-                            </div>
-                            <div id="uploadedStyles" class="space-y-2"></div>
+                            <input 
+                                id="linkedinUrl"
+                                type="text"
+                                class="w-full p-3 rounded-lg"
+                                placeholder="Paste LinkedIn post URL..."
+                            >
+                            <button onclick="addLinkedInPost()" class="secondary-button w-full py-2 rounded-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Post
+                            </button>
                         </div>
+                        
+                        <div id="trainedPosts" class="mt-4 space-y-2"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Generate Button -->
-            <div class="text-center">
-                <button onclick="generatePost()" class="newsec-bg text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 smooth-transition">
+            <div class="text-center mt-8">
+                <button onclick="generatePost()" class="primary-button px-12 py-4 rounded-lg font-semibold text-white text-lg glow">
                     <i class="fas fa-magic mr-2"></i>Generate LinkedIn Post
                 </button>
             </div>
         </div>
 
-        <!-- Step 2: Edit & Enhance -->
-        <div id="step2" class="hidden">
+        <!-- Step 2: Enhance Post -->
+        <div id="step2" class="hidden max-w-7xl mx-auto px-6 py-8">
             <div class="grid lg:grid-cols-3 gap-6">
-                <!-- LinkedIn Post Preview -->
+                <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Editor Toolbar -->
-                    <div class="bg-white rounded-lg shadow p-4">
-                        <div class="flex items-center space-x-2">
-                            <button onclick="formatText('bold')" class="p-2 hover:bg-gray-100 rounded">
-                                <i class="fas fa-bold"></i>
-                            </button>
-                            <button onclick="formatText('italic')" class="p-2 hover:bg-gray-100 rounded">
-                                <i class="fas fa-italic"></i>
-                            </button>
-                            <button onclick="formatText('underline')" class="p-2 hover:bg-gray-100 rounded">
-                                <i class="fas fa-underline"></i>
-                            </button>
-                            <div class="h-6 w-px bg-gray-300 mx-2"></div>
-                            <button onclick="addEmoji()" class="p-2 hover:bg-gray-100 rounded">
-                                <i class="fas fa-smile"></i>
-                            </button>
-                            <button onclick="addHashtag()" class="p-2 hover:bg-gray-100 rounded">
-                                <i class="fas fa-hashtag"></i>
+                    <div class="modern-card p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="formatText('bold')" class="p-2 rounded hover:bg-gray-800">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button onclick="formatText('italic')" class="p-2 rounded hover:bg-gray-800">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button onclick="addEmoji()" class="p-2 rounded hover:bg-gray-800">
+                                    <i class="fas fa-smile"></i>
+                                </button>
+                                <button onclick="addHashtag()" class="p-2 rounded hover:bg-gray-800">
+                                    <i class="fas fa-hashtag"></i>
+                                </button>
+                            </div>
+                            
+                            <button onclick="showStep(1)" class="text-blue-400 hover:text-blue-300">
+                                <i class="fas fa-arrow-left mr-2"></i>New Post
                             </button>
                         </div>
                     </div>
 
-                    <!-- LinkedIn Post -->
-                    <div class="linkedin-post">
-                        <!-- Post Header -->
-                        <div class="p-4 border-b">
+                    <!-- LinkedIn Preview -->
+                    <div class="linkedin-preview">
+                        <div class="p-4 border-b border-gray-800">
                             <div class="flex items-start space-x-3">
-                                <div class="linkedin-avatar newsec-bg rounded-full flex items-center justify-center">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                                     <span class="text-white font-bold text-xl">N</span>
                                 </div>
-                                <div class="flex-1">
+                                <div>
                                     <h3 class="font-semibold">Newsec</h3>
-                                    <p class="text-sm text-gray-500">Real Estate & Energy Transition Expert</p>
-                                    <p class="text-xs text-gray-400">Now • <i class="fas fa-globe"></i></p>
+                                    <p class="text-sm text-gray-400">Real Estate & Energy Expert • Now</p>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Post Content -->
+                        
                         <div class="p-4">
                             <div 
                                 id="postEditor"
-                                class="post-editor"
                                 contenteditable="true"
-                                placeholder="Your post content will appear here..."
+                                class="min-h-[200px] outline-none"
+                                placeholder="Your post will appear here..."
                             ></div>
                         </div>
-
-                        <!-- Selected Image -->
-                        <div id="selectedImagePreview" class="hidden">
-                            <img src="" alt="" class="w-full">
+                        
+                        <div id="selectedImageContainer" class="hidden px-4 pb-4">
+                            <img id="selectedImage" src="" alt="" class="w-full rounded-lg">
                         </div>
-
-                        <!-- Post Actions -->
-                        <div class="p-4 border-t flex items-center justify-between text-gray-500">
-                            <button class="flex items-center space-x-2 hover:text-gray-700">
-                                <i class="far fa-thumbs-up"></i>
-                                <span class="text-sm">Like</span>
-                            </button>
-                            <button class="flex items-center space-x-2 hover:text-gray-700">
-                                <i class="far fa-comment"></i>
-                                <span class="text-sm">Comment</span>
-                            </button>
-                            <button class="flex items-center space-x-2 hover:text-gray-700">
-                                <i class="fas fa-share"></i>
-                                <span class="text-sm">Share</span>
-                            </button>
-                            <button class="flex items-center space-x-2 hover:text-gray-700">
-                                <i class="far fa-paper-plane"></i>
-                                <span class="text-sm">Send</span>
-                            </button>
+                        
+                        <div class="p-4 border-t border-gray-800 flex justify-around text-gray-400">
+                            <button class="hover:text-white"><i class="far fa-thumbs-up mr-2"></i>Like</button>
+                            <button class="hover:text-white"><i class="far fa-comment mr-2"></i>Comment</button>
+                            <button class="hover:text-white"><i class="fas fa-share mr-2"></i>Share</button>
                         </div>
                     </div>
 
-                    <!-- Post Stats -->
-                    <div class="bg-white rounded-lg shadow p-4">
-                        <div class="grid grid-cols-3 gap-4 text-center">
+                    <!-- Stats -->
+                    <div class="modern-card p-4">
+                        <div class="grid grid-cols-3 text-center">
                             <div>
-                                <p class="text-2xl font-semibold text-gray-900" id="charCount">0</p>
-                                <p class="text-sm text-gray-500">Characters</p>
+                                <p class="text-2xl font-bold gradient-text" id="charCount">0</p>
+                                <p class="text-sm text-gray-400">Characters</p>
                             </div>
                             <div>
-                                <p class="text-2xl font-semibold text-gray-900" id="hashtagCount">0</p>
-                                <p class="text-sm text-gray-500">Hashtags</p>
+                                <p class="text-2xl font-bold gradient-text" id="hashtagCount">0</p>
+                                <p class="text-sm text-gray-400">Hashtags</p>
                             </div>
                             <div>
-                                <p class="text-2xl font-semibold text-gray-900" id="emojiCount">0</p>
-                                <p class="text-sm text-gray-500">Emojis</p>
+                                <p class="text-2xl font-bold gradient-text" id="emojiCount">0</p>
+                                <p class="text-sm text-gray-400">Emojis</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Right Column -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- AI Chat Assistant -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">AI Assistant</h2>
+                <div class="space-y-6">
+                    <!-- AI Assistant -->
+                    <div class="modern-card p-6">
+                        <h2 class="text-xl font-semibold mb-4 gradient-text">AI Assistant</h2>
                         <div id="chatMessages" class="h-64 overflow-y-auto mb-4 space-y-3">
-                            <div class="bg-gray-100 rounded-lg p-3">
-                                <p class="text-sm">Hi! I can help you refine your post. Try:</p>
-                                <ul class="text-sm mt-2 space-y-1">
-                                    <li>• "Make it shorter"</li>
-                                    <li>• "Add more hashtags"</li>
-                                    <li>• "Make it more engaging"</li>
-                                    <li>• "Translate to Danish"</li>
-                                </ul>
+                            <div class="bg-gray-800 rounded-lg p-3">
+                                <p class="text-sm">How can I help improve your post?</p>
                             </div>
                         </div>
                         <div class="flex space-x-2">
                             <input 
                                 id="chatInput"
                                 type="text"
-                                class="flex-1 p-2 border rounded-lg"
-                                placeholder="Type your request..."
+                                class="flex-1 p-2 rounded-lg"
+                                placeholder="Ask me anything..."
                                 onkeypress="if(event.key==='Enter') sendChat()"
                             >
-                            <button onclick="sendChat()" class="newsec-bg text-white px-4 py-2 rounded-lg">
+                            <button onclick="sendChat()" class="primary-button px-4 py-2 rounded-lg">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Image Selection -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-lg font-semibold mb-4">Visual Content</h2>
+                    <!-- Images -->
+                    <div class="modern-card p-6">
+                        <h2 class="text-xl font-semibold mb-4 gradient-text">Visual Content</h2>
                         
                         <!-- Tabs -->
-                        <div class="flex border-b mb-4">
-                            <button onclick="switchImageTab('stock')" class="px-4 py-2 border-b-2 border-blue-500 font-medium">
-                                Stock Photos
-                            </button>
-                            <button onclick="switchImageTab('ai')" class="px-4 py-2 text-gray-500">
-                                AI Generated
-                            </button>
-                            <button onclick="switchImageTab('upload')" class="px-4 py-2 text-gray-500">
-                                Upload
+                        <div class="flex space-x-2 mb-4">
+                            <button onclick="switchImageTab('stock')" class="px-3 py-1 rounded bg-gray-800 text-sm">Stock</button>
+                            <button onclick="switchImageTab('newsec')" class="px-3 py-1 rounded text-sm">Newsec</button>
+                            <button onclick="switchImageTab('ai')" class="px-3 py-1 rounded text-sm">AI</button>
+                            <button onclick="switchImageTab('upload')" class="px-3 py-1 rounded text-sm">Upload</button>
+                        </div>
+
+                        <!-- Stock Images -->
+                        <div id="stockTab">
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div class="image-hover border-2 border-gray-700 rounded-lg overflow-hidden cursor-pointer" onclick="selectStockImage(this)">
+                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=200" class="w-full h-24 object-cover">
+                                </div>
+                                <div class="image-hover border-2 border-gray-700 rounded-lg overflow-hidden cursor-pointer" onclick="selectStockImage(this)">
+                                    <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=200" class="w-full h-24 object-cover">
+                                </div>
+                                <div class="image-hover border-2 border-gray-700 rounded-lg overflow-hidden cursor-pointer" onclick="selectStockImage(this)">
+                                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=200" class="w-full h-24 object-cover">
+                                </div>
+                                <div class="image-hover border-2 border-gray-700 rounded-lg overflow-hidden cursor-pointer" onclick="selectStockImage(this)">
+                                    <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=200" class="w-full h-24 object-cover">
+                                </div>
+                            </div>
+                            <button onclick="openUnsplashSearch()" class="secondary-button w-full py-2 rounded-lg text-sm">
+                                <i class="fas fa-search mr-2"></i>Browse More Stock Images
                             </button>
                         </div>
 
-                        <!-- Stock Photos -->
-                        <div id="stockTab" class="image-grid">
-                            <div class="image-option" onclick="selectImage(this, 'stock1')">
-                                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300" alt="Modern building" class="w-full h-full object-cover">
-                            </div>
-                            <div class="image-option" onclick="selectImage(this, 'stock2')">
-                                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=300" alt="Office interior" class="w-full h-full object-cover">
-                            </div>
-                            <div class="image-option" onclick="selectImage(this, 'stock3')">
-                                <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=300" alt="Team meeting" class="w-full h-full object-cover">
-                            </div>
-                            <div class="image-option" onclick="selectImage(this, 'stock4')">
-                                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300" alt="City skyline" class="w-full h-full object-cover">
-                            </div>
+                        <!-- Other tabs hidden by default -->
+                        <div id="newsecTab" class="hidden">
+                            <p class="text-sm text-gray-400 text-center py-8">
+                                Newsec branded images will appear here
+                            </p>
                         </div>
-
-                        <!-- AI Generated -->
+                        
                         <div id="aiTab" class="hidden">
-                            <div class="space-y-4">
-                                <input 
-                                    id="aiImagePrompt"
-                                    type="text"
-                                    class="w-full p-2 border rounded-lg"
-                                    placeholder="Describe the image you want..."
-                                >
-                                <button onclick="generateAIImage()" class="w-full newsec-bg text-white py-2 rounded-lg">
-                                    <i class="fas fa-palette mr-2"></i>Generate Image
-                                </button>
-                                <div id="aiGeneratedImages" class="image-grid mt-4"></div>
-                            </div>
+                            <input 
+                                id="aiPrompt"
+                                type="text"
+                                class="w-full p-2 rounded-lg mb-3"
+                                placeholder="Describe the image..."
+                            >
+                            <button onclick="generateAIImage()" class="primary-button w-full py-2 rounded-lg text-sm">
+                                Generate Image
+                            </button>
                         </div>
-
-                        <!-- Upload -->
+                        
                         <div id="uploadTab" class="hidden">
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 cursor-pointer" onclick="document.getElementById('imageUpload').click()">
-                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
-                                <p class="text-gray-600">Click to upload image</p>
+                            <div class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-gray-400" onclick="document.getElementById('imageUpload').click()">
+                                <i class="fas fa-cloud-upload-alt text-2xl mb-2 text-gray-400"></i>
+                                <p class="text-sm text-gray-400">Click to upload</p>
                                 <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="bg-white rounded-lg shadow p-6 space-y-3">
-                        <button onclick="copyPost()" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200">
-                            <i class="fas fa-copy mr-2"></i>Copy Post
+                    <!-- Actions -->
+                    <div class="modern-card p-6 space-y-3">
+                        <button onclick="copyPost()" class="secondary-button w-full py-2 rounded-lg">
+                            <i class="fas fa-copy mr-2"></i>Copy Text
                         </button>
-                        <button onclick="downloadPost()" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200">
-                            <i class="fas fa-download mr-2"></i>Download
+                        <button onclick="downloadImage()" class="secondary-button w-full py-2 rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Download Image
                         </button>
-                        <button onclick="shareToLinkedIn()" class="w-full newsec-bg text-white py-2 rounded-lg hover:opacity-90">
-                            <i class="fab fa-linkedin mr-2"></i>Open LinkedIn
+                        <button onclick="openLinkedIn()" class="primary-button w-full py-2 rounded-lg">
+                            <i class="fab fa-linkedin mr-2"></i>Post to LinkedIn
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 text-center">
-            <div class="loading-spinner mx-auto mb-4"></div>
-            <p class="text-gray-600">Generating your post...</p>
+    <!-- Unsplash Search Modal -->
+    <div id="unsplashModal" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+        <div class="modern-card p-6 max-w-4xl w-full max-h-[80vh] overflow-hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Search Stock Images</h3>
+                <button onclick="closeUnsplashSearch()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex space-x-2 mb-4">
+                <input 
+                    id="unsplashSearch"
+                    type="text"
+                    class="flex-1 p-2 rounded-lg"
+                    placeholder="Search for images..."
+                    onkeypress="if(event.key==='Enter') searchUnsplash()"
+                >
+                <button onclick="searchUnsplash()" class="primary-button px-6 py-2 rounded-lg">
+                    Search
+                </button>
+            </div>
+            
+            <div id="unsplashResults" class="grid grid-cols-3 gap-3 overflow-y-auto max-h-[50vh]">
+                <!-- Results will appear here -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Word counter
-            document.getElementById('contentInput').addEventListener('input', updateWordCount);
-            
-            // Post editor
-            document.getElementById('postEditor').addEventListener('input', updatePostStats);
-        });
+        // Store current language globally
+        let currentLanguage = 'en';
+        let selectedImageUrl = null;
 
-        // Word count
-        function updateWordCount() {
-            const content = document.getElementById('contentInput').value;
-            const words = content.trim().split(/\s+/).filter(word => word.length > 0).length;
-            document.getElementById('wordCount').textContent = words;
+        // Login functionality
+        function checkLogin() {
+            const password = document.getElementById('loginPassword').value;
+            if (password === 'NEWSEC2025') {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('loginError').classList.add('hidden');
+                }, 3000);
+            }
         }
 
-        // Generate Post
+        // Logout
+        function logout() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Navigation
+        function showStep(step) {
+            if (step === 1) {
+                document.getElementById('step1').classList.remove('hidden');
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('navStep1').classList.add('text-blue-400');
+                document.getElementById('navStep1').classList.remove('text-gray-400');
+                document.getElementById('navStep2').classList.remove('text-blue-400');
+                document.getElementById('navStep2').classList.add('text-gray-400');
+            } else {
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                document.getElementById('navStep2').classList.add('text-blue-400');
+                document.getElementById('navStep2').classList.remove('text-gray-400');
+                document.getElementById('navStep1').classList.remove('text-blue-400');
+                document.getElementById('navStep1').classList.add('text-gray-400');
+            }
+        }
+
+        // Word counter
+        document.getElementById('contentInput').addEventListener('input', function() {
+            const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            document.getElementById('wordCount').textContent = words;
+        });
+
+        // Clear content
+        function clearContent() {
+            document.getElementById('contentInput').value = '';
+            document.getElementById('wordCount').textContent = '0';
+        }
+
+        // Add LinkedIn post for training
+        function addLinkedInPost() {
+            const url = document.getElementById('linkedinUrl').value;
+            if (!url) return;
+            
+            const postsDiv = document.getElementById('trainedPosts');
+            const postItem = document.createElement('div');
+            postItem.className = 'flex items-center justify-between p-2 bg-gray-800 rounded';
+            postItem.innerHTML = `
+                <span class="text-sm truncate flex-1">${url}</span>
+                <button onclick="this.parentElement.remove()" class="text-red-400 ml-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            postsDiv.appendChild(postItem);
+            document.getElementById('linkedinUrl').value = '';
+        }
+
+        // Generate post
         async function generatePost() {
             const content = document.getElementById('contentInput').value;
-            if (!content.trim()) {
+            if (!content) {
                 alert('Please enter some content first');
                 return;
             }
 
-            // Show loading
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-
-            // Get configuration
-            const language = document.getElementById('language').value;
+            // Store current language
+            currentLanguage = document.getElementById('language').value;
             const postType = document.getElementById('postType').value;
             const style = document.querySelector('input[name="style"]:checked').value;
+
+            // Show loading state
+            showStep(2);
+            document.getElementById('postEditor').innerHTML = '<div class="loading-pulse">Generating your post...</div>';
 
             try {
                 const response = await fetch('/api/generate-post', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         content,
-                        language,
+                        language: currentLanguage,
                         postType,
                         style
                     })
                 });
 
                 const data = await response.json();
-                
                 if (data.success) {
-                    // Move to step 2
-                    showStep2();
-                    
-                    // Display generated post
                     document.getElementById('postEditor').innerHTML = data.post.full;
-                    updatePostStats();
-                } else {
-                    throw new Error(data.message);
+                    updateStats();
                 }
             } catch (error) {
-                console.error('Error:', error);
-                // Fallback to demo content
-                showStep2();
-                const demoPost = `🏢 Exciting news from Newsec!
+                // Demo fallback
+                document.getElementById('postEditor').innerHTML = `🚀 Exciting news from Newsec!
 
-We're thrilled to announce our latest sustainable real estate development in Stockholm. This project represents our commitment to creating value while protecting our environment.
+We're thrilled to share our latest sustainable development project in Stockholm. This innovative approach sets new standards for green building in the Nordics.
 
 Key highlights:
-✅ LEED Gold certification target
-✅ 15,000 sqm of modern office space
-✅ Carbon-neutral operations by 2025
+✅ Carbon-neutral by 2025
+✅ LEED Gold certification
+✅ 15,000 sqm modern workspace
 
-At Newsec, we believe the future of real estate lies in sustainable innovation. What's your vision for sustainable urban development?
+What's your vision for sustainable real estate? 
 
 #RealEstate #Sustainability #Innovation #Newsec #GreenBuilding`;
-                
-                document.getElementById('postEditor').innerHTML = demoPost;
-                updatePostStats();
-            } finally {
-                document.getElementById('loadingOverlay').classList.add('hidden');
+                updateStats();
             }
         }
 
-        // Show Step 2
-        function showStep2() {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
-            
-            // Update progress
-            document.getElementById('step1Circle').classList.remove('step-active');
-            document.getElementById('step1Circle').classList.add('step-complete');
-            document.getElementById('step2Circle').classList.remove('step-inactive');
-            document.getElementById('step2Circle').classList.add('step-active');
-        }
-
-        // Update post statistics
-        function updatePostStats() {
+        // Update statistics
+        function updateStats() {
             const content = document.getElementById('postEditor').innerText;
-            
-            // Character count
             document.getElementById('charCount').textContent = content.length;
-            
-            // Hashtag count
-            const hashtags = (content.match(/#\w+/g) || []).length;
-            document.getElementById('hashtagCount').textContent = hashtags;
-            
-            // Emoji count
-            const emojis = (content.match(/[\u{1F300}-\u{1F9FF}]/gu) || []).length;
-            document.getElementById('emojiCount').textContent = emojis;
+            document.getElementById('hashtagCount').textContent = (content.match(/#\w+/g) || []).length;
+            document.getElementById('emojiCount').textContent = (content.match(/[\u{1F300}-\u{1F9FF}]/gu) || []).length;
         }
 
-        // Text formatting
+        // Editor functions
         function formatText(command) {
             document.execCommand(command, false, null);
             document.getElementById('postEditor').focus();
         }
 
-        // Add emoji
         function addEmoji() {
             const emojis = ['👍', '💡', '🚀', '✨', '💪', '🎯', '✅', '📈', '🌟', '💼'];
             const emoji = emojis[Math.floor(Math.random() * emojis.length)];
             document.execCommand('insertText', false, emoji);
-            document.getElementById('postEditor').focus();
-            updatePostStats();
+            updateStats();
         }
 
-        // Add hashtag
         function addHashtag() {
-            const hashtags = ['#RealEstate', '#Sustainability', '#Innovation', '#Newsec', '#PropTech', 
-                             '#GreenBuilding', '#NordicRealEstate', '#UrbanDevelopment', '#ESG', '#FutureOfWork'];
+            const hashtags = ['#RealEstate', '#Sustainability', '#Innovation', '#Newsec', '#PropTech'];
             const hashtag = hashtags[Math.floor(Math.random() * hashtags.length)];
             document.execCommand('insertText', false, ' ' + hashtag);
-            document.getElementById('postEditor').focus();
-            updatePostStats();
+            updateStats();
         }
 
-        // Image tab switching
-        function switchImageTab(tab) {
-            // Hide all tabs
-            document.getElementById('stockTab').classList.add('hidden');
-            document.getElementById('aiTab').classList.add('hidden');
-            document.getElementById('uploadTab').classList.add('hidden');
-            
-            // Show selected tab
-            document.getElementById(tab + 'Tab').classList.remove('hidden');
-            
-            // Update tab buttons
-            const buttons = document.querySelectorAll('.flex.border-b button');
-            buttons.forEach(btn => {
-                btn.classList.remove('border-b-2', 'border-blue-500', 'font-medium');
-                btn.classList.add('text-gray-500');
-            });
-            event.target.classList.add('border-b-2', 'border-blue-500', 'font-medium');
-            event.target.classList.remove('text-gray-500');
-        }
+        // Listen for content changes
+        document.getElementById('postEditor').addEventListener('input', updateStats);
 
-        // Select image
-        function selectImage(element, imageId) {
-            // Remove previous selection
-            document.querySelectorAll('.image-option').forEach(img => {
-                img.classList.remove('selected');
-            });
-            
-            // Add selection
-            element.classList.add('selected');
-            
-            // Show preview in post
-            const imgSrc = element.querySelector('img').src;
-            const preview = document.getElementById('selectedImagePreview');
-            preview.querySelector('img').src = imgSrc;
-            preview.classList.remove('hidden');
-        }
-
-        // Generate AI Image
-        async function generateAIImage() {
-            const prompt = document.getElementById('aiImagePrompt').value;
-            if (!prompt) {
-                alert('Please describe the image you want');
-                return;
-            }
-
-            const aiImagesDiv = document.getElementById('aiGeneratedImages');
-            aiImagesDiv.innerHTML = '<div class="loading-spinner mx-auto"></div>';
-
-            try {
-                const response = await fetch('/api/generate-image', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        prompt: prompt + ' professional real estate, Newsec brand, modern Nordic style, blue color scheme',
-                        n: 4
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.success && data.images) {
-                    aiImagesDiv.innerHTML = '';
-                    data.images.forEach((imgUrl, index) => {
-                        const imgDiv = document.createElement('div');
-                        imgDiv.className = 'image-option';
-                        imgDiv.onclick = function() { selectImage(this, 'ai' + index); };
-                        imgDiv.innerHTML = `<img src="${imgUrl}" alt="AI generated" class="w-full h-full object-cover">`;
-                        aiImagesDiv.appendChild(imgDiv);
-                    });
-                } else {
-                    throw new Error('Failed to generate images');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                // Demo fallback
-                aiImagesDiv.innerHTML = `
-                    <div class="text-center text-gray-500">
-                        <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
-                        <p class="text-sm">AI image generation requires API setup</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Handle image upload
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('selectedImagePreview');
-                    preview.querySelector('img').src = e.target.result;
-                    preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Chat functionality
+        // Chat functionality with language persistence
         async function sendChat() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
@@ -741,7 +676,7 @@ At Newsec, we believe the future of real estate lies in sustainable innovation. 
             
             // Add user message
             chatDiv.innerHTML += `
-                <div class="bg-blue-100 rounded-lg p-3 ml-auto max-w-xs">
+                <div class="bg-blue-900 bg-opacity-50 rounded-lg p-3 ml-auto max-w-xs">
                     <p class="text-sm">${message}</p>
                 </div>
             `;
@@ -749,9 +684,9 @@ At Newsec, we believe the future of real estate lies in sustainable innovation. 
             input.value = '';
             chatDiv.scrollTop = chatDiv.scrollHeight;
 
-            // Add AI typing indicator
+            // Add typing indicator
             chatDiv.innerHTML += `
-                <div id="typing" class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                <div id="typing" class="bg-gray-800 rounded-lg p-3 max-w-xs">
                     <p class="text-sm">AI is thinking...</p>
                 </div>
             `;
@@ -761,42 +696,32 @@ At Newsec, we believe the future of real estate lies in sustainable innovation. 
                 
                 const response = await fetch('/api/refine-post', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         post: currentPost,
-                        instruction: message
+                        instruction: message,
+                        language: currentLanguage // Pass current language
                     })
                 });
 
                 const data = await response.json();
-                
-                // Remove typing indicator
                 document.getElementById('typing').remove();
                 
                 if (data.success) {
-                    // Update post
                     document.getElementById('postEditor').innerHTML = data.refinedPost;
-                    updatePostStats();
+                    updateStats();
                     
-                    // Add AI response
                     chatDiv.innerHTML += `
-                        <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                            <p class="text-sm">Done! I've updated your post as requested.</p>
+                        <div class="bg-gray-800 rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">Done! I've updated your post.</p>
                         </div>
                     `;
-                } else {
-                    throw new Error('Failed to refine post');
                 }
             } catch (error) {
-                console.error('Error:', error);
                 document.getElementById('typing').remove();
-                
-                // Demo response
                 chatDiv.innerHTML += `
-                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                        <p class="text-sm">I've updated your post! (Demo mode - API not connected)</p>
+                    <div class="bg-gray-800 rounded-lg p-3 max-w-xs">
+                        <p class="text-sm">Updated! (Demo mode)</p>
                     </div>
                 `;
             }
@@ -804,54 +729,175 @@ At Newsec, we believe the future of real estate lies in sustainable innovation. 
             chatDiv.scrollTop = chatDiv.scrollHeight;
         }
 
-        // Copy post
-        function copyPost() {
-            const postText = document.getElementById('postEditor').innerText;
-            navigator.clipboard.writeText(postText).then(() => {
-                alert('Post copied to clipboard!');
+        // Image tab switching
+        function switchImageTab(tab) {
+            const tabs = ['stock', 'newsec', 'ai', 'upload'];
+            tabs.forEach(t => {
+                document.getElementById(t + 'Tab').classList.add('hidden');
+            });
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
+            
+            // Update button styles
+            event.target.classList.add('bg-gray-800');
+            event.target.parentElement.querySelectorAll('button').forEach(btn => {
+                if (btn !== event.target) btn.classList.remove('bg-gray-800');
             });
         }
 
-        // Download post
-        function downloadPost() {
-            const postText = document.getElementById('postEditor').innerText;
-            const blob = new Blob([postText], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'linkedin-post.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+        // Stock image selection
+        function selectStockImage(element) {
+            const imgSrc = element.querySelector('img').src;
+            selectedImageUrl = imgSrc.replace('w=200', 'w=800'); // Get higher res version
+            
+            document.getElementById('selectedImage').src = selectedImageUrl;
+            document.getElementById('selectedImageContainer').classList.remove('hidden');
+            
+            // Highlight selected
+            document.querySelectorAll('.image-hover').forEach(img => {
+                img.classList.remove('border-blue-500');
+                img.classList.add('border-gray-700');
+            });
+            element.classList.remove('border-gray-700');
+            element.classList.add('border-blue-500');
         }
 
-        // Share to LinkedIn
-        function shareToLinkedIn() {
+        // Unsplash search modal
+        function openUnsplashSearch() {
+            document.getElementById('unsplashModal').classList.remove('hidden');
+            searchUnsplash('office building'); // Default search
+        }
+
+        function closeUnsplashSearch() {
+            document.getElementById('unsplashModal').classList.add('hidden');
+        }
+
+        // Search Unsplash (demo version)
+        async function searchUnsplash(query) {
+            const searchTerm = query || document.getElementById('unsplashSearch').value || 'office building';
+            const resultsDiv = document.getElementById('unsplashResults');
+            
+            resultsDiv.innerHTML = '<div class="col-span-3 text-center py-8">Searching...</div>';
+            
+            // Demo images (in production, this would call Unsplash API)
+            const demoImages = [
+                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+                'https://images.unsplash.com/photo-1497366216548-37526070297c',
+                'https://images.unsplash.com/photo-1497366754035-f200968a6e72',
+                'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+                'https://images.unsplash.com/photo-1497366412874-3415097a27e7',
+                'https://images.unsplash.com/photo-1497366858526-0766cadbe8fa'
+            ];
+            
+            setTimeout(() => {
+                resultsDiv.innerHTML = '';
+                demoImages.forEach((img, i) => {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'cursor-pointer border-2 border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition';
+                    imgDiv.innerHTML = `<img src="${img}?w=300" class="w-full h-32 object-cover">`;
+                    imgDiv.onclick = function() {
+                        selectedImageUrl = img + '?w=800';
+                        document.getElementById('selectedImage').src = selectedImageUrl;
+                        document.getElementById('selectedImageContainer').classList.remove('hidden');
+                        closeUnsplashSearch();
+                    };
+                    resultsDiv.appendChild(imgDiv);
+                });
+            }, 1000);
+        }
+
+        // Generate AI image
+        async function generateAIImage() {
+            const prompt = document.getElementById('aiPrompt').value;
+            if (!prompt) {
+                alert('Please describe the image you want');
+                return;
+            }
+
+            // Show loading state
+            const aiTab = document.getElementById('aiTab');
+            const originalContent = aiTab.innerHTML;
+            aiTab.innerHTML = '<div class="text-center py-8"><div class="loading-pulse">Generating image...</div></div>';
+
+            try {
+                const response = await fetch('/api/generate-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+                if (data.success && data.images[0]) {
+                    selectedImageUrl = data.images[0];
+                    document.getElementById('selectedImage').src = selectedImageUrl;
+                    document.getElementById('selectedImageContainer').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            
+            // Restore original content
+            aiTab.innerHTML = originalContent;
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImageUrl = e.target.result;
+                    document.getElementById('selectedImage').src = selectedImageUrl;
+                    document.getElementById('selectedImageContainer').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Copy post text only
+        function copyPost() {
+            const postText = document.getElementById('postEditor').innerText;
+            navigator.clipboard.writeText(postText).then(() => {
+                // Show success feedback
+                event.target.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                setTimeout(() => {
+                    event.target.innerHTML = '<i class="fas fa-copy mr-2"></i>Copy Text';
+                }, 2000);
+            });
+        }
+
+        // Download selected image
+        function downloadImage() {
+            if (!selectedImageUrl) {
+                alert('Please select an image first');
+                return;
+            }
+
+            // Create a temporary link to download
+            const link = document.createElement('a');
+            link.href = selectedImageUrl;
+            link.download = 'linkedin-post-image.jpg';
+            
+            // If it's a data URL or same-origin, download directly
+            if (selectedImageUrl.startsWith('data:') || selectedImageUrl.startsWith(window.location.origin)) {
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                // For external URLs, open in new tab (due to CORS)
+                window.open(selectedImageUrl, '_blank');
+                alert('Right-click the image and save it');
+            }
+        }
+
+        // Open LinkedIn
+        function openLinkedIn() {
             window.open('https://www.linkedin.com/feed/', '_blank');
         }
 
-        // Settings modal (placeholder)
-        function showSettings() {
-            alert('Settings panel coming soon! Here you can configure API keys, default languages, and more.');
-        }
-
-        // Handle style upload
-        document.getElementById('styleUpload').addEventListener('change', function(e) {
-            const files = e.target.files;
-            const uploadedDiv = document.getElementById('uploadedStyles');
-            
-            for (let file of files) {
-                const fileDiv = document.createElement('div');
-                fileDiv.className = 'flex items-center justify-between p-2 bg-gray-50 rounded';
-                fileDiv.innerHTML = `
-                    <span class="text-sm text-gray-700">${file.name}</span>
-                    <button class="text-red-500 text-sm" onclick="this.parentElement.remove()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                uploadedDiv.appendChild(fileDiv);
-            }
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus password field on load
+            document.getElementById('loginPassword').focus();
         });
     </script>
 </body>
