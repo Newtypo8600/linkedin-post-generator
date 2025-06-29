@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LinkedIn Post Generator - Newsec</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -14,661 +13,722 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        body {
-            background-color: #F8F9FB;
-        }
-        
-        .newsec-blue {
-            color: #0047AB;
+        /* Newsec Brand Colors */
+        :root {
+            --newsec-blue: #0047AB;
+            --newsec-dark-blue: #002E6D;
+            --newsec-light-blue: #E8F0FF;
+            --newsec-gray: #6B7280;
+            --newsec-light-gray: #F9FAFB;
         }
         
         .newsec-bg {
-            background-color: #0047AB;
+            background-color: var(--newsec-blue);
         }
         
-        .newsec-light-bg {
-            background-color: #E8F0FF;
+        .newsec-text {
+            color: var(--newsec-blue);
         }
         
-        .card-shadow {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+        /* Flow Steps */
+        .step-inactive {
+            background-color: #E5E7EB;
+            color: #9CA3AF;
         }
         
-        .card-shadow-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .step-active {
+            background-color: var(--newsec-blue);
+            color: white;
         }
         
-        .card-shadow-hover:hover {
-            box-shadow: 0 10px 30px rgba(0, 71, 171, 0.1);
-            transform: translateY(-2px);
+        .step-complete {
+            background-color: #10B981;
+            color: white;
         }
         
+        /* LinkedIn Post Styles */
+        .linkedin-post {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+        
+        .linkedin-avatar {
+            width: 48px;
+            height: 48px;
+        }
+        
+        /* Rich Text Editor */
+        .post-editor {
+            min-height: 200px;
+            outline: none;
+        }
+        
+        .post-editor:focus {
+            border-color: var(--newsec-blue);
+        }
+        
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .image-option {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .image-option:hover {
+            transform: scale(1.05);
+            border-color: var(--newsec-blue);
+        }
+        
+        .image-option.selected {
+            border-color: var(--newsec-blue);
+            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
+        }
+        
+        /* Smooth transitions */
         .smooth-transition {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .tab-active {
-            border-bottom: 2px solid #0047AB;
-            color: #0047AB;
+        /* Loading Animation */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--newsec-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
         }
         
-        .dot-pattern {
-            background-image: radial-gradient(circle, #E0E7FF 1px, transparent 1px);
-            background-size: 20px 20px;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .pulse-dot {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 71, 171, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(0, 71, 171, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 71, 171, 0);
-            }
-        }
-        
-        .loading-bar {
-            animation: loading 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes loading {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-        
-        /* Custom scrollbar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
         
         ::-webkit-scrollbar-track {
-            background: #F3F4F6;
-            border-radius: 4px;
+            background: #f1f1f1;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: #D1D5DB;
+            background: #888;
             border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: #9CA3AF;
-        }
-        
-        /* Input focus styles */
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #0047AB;
-            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
-        }
-        
-        /* Button active state */
-        button:active {
-            transform: scale(0.98);
+            background: #555;
         }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Access Modal -->
-    <div id="accessModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 card-shadow fade-in">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 newsec-bg rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <span class="text-white font-bold text-2xl">N</span>
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 newsec-bg rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">N</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">LinkedIn Post Generator</h1>
+                        <p class="text-sm text-gray-500">AI-powered content creation for Newsec</p>
+                    </div>
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-900">Welcome to LinkedIn Post Generator</h2>
-                <p class="text-gray-500 mt-2">Enter your access code to continue</p>
+                <button onclick="showSettings()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-cog text-xl"></i>
+                </button>
             </div>
-            
-            <input type="password" id="accessCode" 
-                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 smooth-transition"
-                   placeholder="Enter access code">
-            
-            <button onclick="checkAccess()" 
-                    class="w-full mt-4 newsec-bg text-white py-3 rounded-xl font-medium hover:opacity-90 smooth-transition">
-                Access Demo
-            </button>
-            
-            <p class="text-center text-sm text-gray-400 mt-4">Demo code: NEWSEC2025</p>
+        </div>
+    </header>
+
+    <!-- Progress Steps -->
+    <div class="bg-white border-b">
+        <div class="max-w-4xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div id="step1Circle" class="w-10 h-10 step-active rounded-full flex items-center justify-center font-medium">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <span class="ml-3 font-medium">Configure Post</span>
+                </div>
+                <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                <div class="flex items-center">
+                    <div id="step2Circle" class="w-10 h-10 step-inactive rounded-full flex items-center justify-center font-medium">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <span class="ml-3 font-medium text-gray-400">Edit & Enhance</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="mainApp" class="hidden">
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-100">
-            <div class="max-w-7xl mx-auto px-6 py-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 newsec-bg rounded-xl flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">N</span>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-semibold text-gray-900">LinkedIn Post Generator</h1>
-                            <p class="text-sm text-gray-500">Transform emails into engaging posts</p>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Step 1: Configuration -->
+        <div id="step1" class="space-y-6">
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Input Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Content Input</h2>
+                        <textarea 
+                            id="contentInput"
+                            class="w-full p-4 border rounded-lg resize-none h-48"
+                            placeholder="Paste your email content or write your ideas here..."
+                        ></textarea>
+                        <div class="mt-2 text-sm text-gray-500">
+                            <span id="wordCount">0</span> words
                         </div>
                     </div>
-                    
-                    <div class="flex items-center space-x-6">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                            <span class="text-sm text-gray-600">AI Ready</span>
+
+                    <!-- Configuration Options -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Post Configuration</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Language Selection -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-language mr-2"></i>Language
+                                </label>
+                                <select id="language" class="w-full p-2 border rounded-lg">
+                                    <option value="en">English</option>
+                                    <option value="da">Dansk</option>
+                                    <option value="sv">Svenska</option>
+                                    <option value="fi">Suomi</option>
+                                </select>
+                            </div>
+
+                            <!-- Post Type -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-lightbulb mr-2"></i>Post Type
+                                </label>
+                                <select id="postType" class="w-full p-2 border rounded-lg">
+                                    <option value="instructive">Instructive</option>
+                                    <option value="inspirational">Inspirational</option>
+                                    <option value="announcement">Announcement</option>
+                                    <option value="thought-leadership">Thought Leadership</option>
+                                    <option value="case-study">Case Study</option>
+                                </select>
+                            </div>
                         </div>
-                        <button class="text-gray-400 hover:text-gray-600 smooth-transition">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
+                    </div>
+                </div>
+
+                <!-- Style Selection & Training -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Tone Selection -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Writing Style</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="style" value="professional" checked class="mr-3">
+                                <div>
+                                    <div class="font-medium">Professional</div>
+                                    <div class="text-sm text-gray-500">Formal and authoritative</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="style" value="conversational" class="mr-3">
+                                <div>
+                                    <div class="font-medium">Conversational</div>
+                                    <div class="text-sm text-gray-500">Friendly and approachable</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="style" value="custom" class="mr-3">
+                                <div>
+                                    <div class="font-medium">Custom Style</div>
+                                    <div class="text-sm text-gray-500">Use your trained style</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Style Training -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Train Custom Style</h2>
+                        <p class="text-sm text-gray-600 mb-4">Upload 5-20 of your best LinkedIn posts to train the AI on your writing style.</p>
+                        <div class="space-y-3">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 cursor-pointer" onclick="document.getElementById('styleUpload').click()">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600">Click to upload posts</p>
+                                <input type="file" id="styleUpload" multiple accept=".txt,.pdf" class="hidden">
+                            </div>
+                            <div id="uploadedStyles" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button onclick="generatePost()" class="newsec-bg text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 smooth-transition">
+                    <i class="fas fa-magic mr-2"></i>Generate LinkedIn Post
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Edit & Enhance -->
+        <div id="step2" class="hidden">
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- LinkedIn Post Preview -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Editor Toolbar -->
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="formatText('bold')" class="p-2 hover:bg-gray-100 rounded">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button onclick="formatText('italic')" class="p-2 hover:bg-gray-100 rounded">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button onclick="formatText('underline')" class="p-2 hover:bg-gray-100 rounded">
+                                <i class="fas fa-underline"></i>
+                            </button>
+                            <div class="h-6 w-px bg-gray-300 mx-2"></div>
+                            <button onclick="addEmoji()" class="p-2 hover:bg-gray-100 rounded">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button onclick="addHashtag()" class="p-2 hover:bg-gray-100 rounded">
+                                <i class="fas fa-hashtag"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn Post -->
+                    <div class="linkedin-post">
+                        <!-- Post Header -->
+                        <div class="p-4 border-b">
+                            <div class="flex items-start space-x-3">
+                                <div class="linkedin-avatar newsec-bg rounded-full flex items-center justify-center">
+                                    <span class="text-white font-bold text-xl">N</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold">Newsec</h3>
+                                    <p class="text-sm text-gray-500">Real Estate & Energy Transition Expert</p>
+                                    <p class="text-xs text-gray-400">Now • <i class="fas fa-globe"></i></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post Content -->
+                        <div class="p-4">
+                            <div 
+                                id="postEditor"
+                                class="post-editor"
+                                contenteditable="true"
+                                placeholder="Your post content will appear here..."
+                            ></div>
+                        </div>
+
+                        <!-- Selected Image -->
+                        <div id="selectedImagePreview" class="hidden">
+                            <img src="" alt="" class="w-full">
+                        </div>
+
+                        <!-- Post Actions -->
+                        <div class="p-4 border-t flex items-center justify-between text-gray-500">
+                            <button class="flex items-center space-x-2 hover:text-gray-700">
+                                <i class="far fa-thumbs-up"></i>
+                                <span class="text-sm">Like</span>
+                            </button>
+                            <button class="flex items-center space-x-2 hover:text-gray-700">
+                                <i class="far fa-comment"></i>
+                                <span class="text-sm">Comment</span>
+                            </button>
+                            <button class="flex items-center space-x-2 hover:text-gray-700">
+                                <i class="fas fa-share"></i>
+                                <span class="text-sm">Share</span>
+                            </button>
+                            <button class="flex items-center space-x-2 hover:text-gray-700">
+                                <i class="far fa-paper-plane"></i>
+                                <span class="text-sm">Send</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Post Stats -->
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p class="text-2xl font-semibold text-gray-900" id="charCount">0</p>
+                                <p class="text-sm text-gray-500">Characters</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-semibold text-gray-900" id="hashtagCount">0</p>
+                                <p class="text-sm text-gray-500">Hashtags</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-semibold text-gray-900" id="emojiCount">0</p>
+                                <p class="text-sm text-gray-500">Emojis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- AI Chat Assistant -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">AI Assistant</h2>
+                        <div id="chatMessages" class="h-64 overflow-y-auto mb-4 space-y-3">
+                            <div class="bg-gray-100 rounded-lg p-3">
+                                <p class="text-sm">Hi! I can help you refine your post. Try:</p>
+                                <ul class="text-sm mt-2 space-y-1">
+                                    <li>• "Make it shorter"</li>
+                                    <li>• "Add more hashtags"</li>
+                                    <li>• "Make it more engaging"</li>
+                                    <li>• "Translate to Danish"</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input 
+                                id="chatInput"
+                                type="text"
+                                class="flex-1 p-2 border rounded-lg"
+                                placeholder="Type your request..."
+                                onkeypress="if(event.key==='Enter') sendChat()"
+                            >
+                            <button onclick="sendChat()" class="newsec-bg text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Image Selection -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold mb-4">Visual Content</h2>
+                        
+                        <!-- Tabs -->
+                        <div class="flex border-b mb-4">
+                            <button onclick="switchImageTab('stock')" class="px-4 py-2 border-b-2 border-blue-500 font-medium">
+                                Stock Photos
+                            </button>
+                            <button onclick="switchImageTab('ai')" class="px-4 py-2 text-gray-500">
+                                AI Generated
+                            </button>
+                            <button onclick="switchImageTab('upload')" class="px-4 py-2 text-gray-500">
+                                Upload
+                            </button>
+                        </div>
+
+                        <!-- Stock Photos -->
+                        <div id="stockTab" class="image-grid">
+                            <div class="image-option" onclick="selectImage(this, 'stock1')">
+                                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300" alt="Modern building" class="w-full h-full object-cover">
+                            </div>
+                            <div class="image-option" onclick="selectImage(this, 'stock2')">
+                                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=300" alt="Office interior" class="w-full h-full object-cover">
+                            </div>
+                            <div class="image-option" onclick="selectImage(this, 'stock3')">
+                                <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=300" alt="Team meeting" class="w-full h-full object-cover">
+                            </div>
+                            <div class="image-option" onclick="selectImage(this, 'stock4')">
+                                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300" alt="City skyline" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+
+                        <!-- AI Generated -->
+                        <div id="aiTab" class="hidden">
+                            <div class="space-y-4">
+                                <input 
+                                    id="aiImagePrompt"
+                                    type="text"
+                                    class="w-full p-2 border rounded-lg"
+                                    placeholder="Describe the image you want..."
+                                >
+                                <button onclick="generateAIImage()" class="w-full newsec-bg text-white py-2 rounded-lg">
+                                    <i class="fas fa-palette mr-2"></i>Generate Image
+                                </button>
+                                <div id="aiGeneratedImages" class="image-grid mt-4"></div>
+                            </div>
+                        </div>
+
+                        <!-- Upload -->
+                        <div id="uploadTab" class="hidden">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 cursor-pointer" onclick="document.getElementById('imageUpload').click()">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-600">Click to upload image</p>
+                                <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+                        <button onclick="copyPost()" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-copy mr-2"></i>Copy Post
+                        </button>
+                        <button onclick="downloadPost()" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-download mr-2"></i>Download
+                        </button>
+                        <button onclick="shareToLinkedIn()" class="w-full newsec-bg text-white py-2 rounded-lg hover:opacity-90">
+                            <i class="fab fa-linkedin mr-2"></i>Open LinkedIn
                         </button>
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </main>
 
-        <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-6 py-8">
-            <!-- Progress Steps -->
-            <div class="mb-8">
-                <div class="flex items-center justify-between max-w-2xl mx-auto">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 newsec-bg text-white rounded-full flex items-center justify-center font-medium">1</div>
-                        <span class="ml-3 font-medium text-gray-900">Input Content</span>
-                    </div>
-                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
-                    <div class="flex items-center">
-                        <div id="step2" class="w-10 h-10 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center font-medium smooth-transition">2</div>
-                        <span class="ml-3 font-medium text-gray-400">Generate & Refine</span>
-                    </div>
-                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
-                    <div class="flex items-center">
-                        <div id="step3" class="w-10 h-10 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center font-medium smooth-transition">3</div>
-                        <span class="ml-3 font-medium text-gray-400">Export</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content Grid -->
-            <div class="grid lg:grid-cols-3 gap-6">
-                <!-- Left Column - Input -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- Email Input Card -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow card-shadow-hover">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-gray-900">Email Content</h3>
-                            <button class="text-gray-400 hover:text-gray-600 smooth-transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <textarea id="emailContent" 
-                                  class="w-full h-48 p-4 border border-gray-200 rounded-xl resize-none smooth-transition"
-                                  placeholder="Paste your email content here..."></textarea>
-                        
-                        <div class="mt-4 flex items-center justify-between">
-                            <span class="text-sm text-gray-500">0 words</span>
-                            <button onclick="clearInput()" class="text-sm text-gray-500 hover:text-gray-700 smooth-transition">Clear</button>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow">
-                        <h3 class="font-semibold text-gray-900 mb-4">Quick Actions</h3>
-                        <div class="space-y-3">
-                            <button onclick="loadExample()" class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-50 smooth-transition flex items-center justify-between group">
-                                <span class="text-gray-700">Load example content</span>
-                                <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </button>
-                            <button class="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-50 smooth-transition flex items-center justify-between group">
-                                <span class="text-gray-700">Import from Gmail</span>
-                                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-md">Coming soon</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Center Column - Generated Content -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- Generated Post Card -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow card-shadow-hover">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-semibold text-gray-900">Generated Post</h3>
-                            <div class="flex items-center space-x-2">
-                                <button onclick="copyPost()" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg smooth-transition">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                    </svg>
-                                </button>
-                                <button onclick="regeneratePost()" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg smooth-transition">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div id="generatedPost" class="min-h-[300px] relative">
-                            <div class="text-center py-12">
-                                <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                </div>
-                                <p class="text-gray-500">Your LinkedIn post will appear here</p>
-                                <button onclick="generatePost()" class="mt-4 newsec-bg text-white px-6 py-2 rounded-xl font-medium hover:opacity-90 smooth-transition">
-                                    Generate Post
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div id="postStats" class="hidden mt-4 pt-4 border-t border-gray-100">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-500">Characters: <span id="charCount" class="font-medium text-gray-700">0</span></span>
-                                <span class="text-gray-500">Hashtags: <span id="hashtagCount" class="font-medium text-gray-700">0</span></span>
-                                <span class="text-gray-500">Emojis: <span id="emojiCount" class="font-medium text-gray-700">0</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Refinement Chat -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow">
-                        <h3 class="font-semibold text-gray-900 mb-4">Refine Your Post</h3>
-                        
-                        <div id="chatMessages" class="h-48 overflow-y-auto mb-4 space-y-3">
-                            <div class="flex items-start space-x-3">
-                                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                <div class="flex-1 bg-gray-50 rounded-xl p-3">
-                                    <p class="text-sm text-gray-700">Hi! I can help you refine your post. Try asking me to:</p>
-                                    <ul class="mt-2 text-sm text-gray-600 space-y-1">
-                                        <li>• Make it more professional</li>
-                                        <li>• Add relevant hashtags</li>
-                                        <li>• Shorten or expand the content</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex space-x-2">
-                            <input id="chatInput" type="text" 
-                                   class="flex-1 px-4 py-2 border border-gray-200 rounded-xl smooth-transition"
-                                   placeholder="Ask me anything...">
-                            <button onclick="sendChat()" class="newsec-bg text-white px-4 py-2 rounded-xl hover:opacity-90 smooth-transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column - Visuals & Export -->
-                <div class="lg:col-span-1 space-y-6">
-                    <!-- Visual Tabs -->
-                    <div class="bg-white rounded-2xl card-shadow">
-                        <div class="border-b border-gray-100">
-                            <div class="flex">
-                                <button onclick="switchTab('stock')" id="stockTab" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 tab-active smooth-transition">
-                                    Stock Photos
-                                </button>
-                                <button onclick="switchTab('branded')" id="brandedTab" class="flex-1 px-4 py-3 text-sm font-medium text-gray-500 smooth-transition">
-                                    Branded Graphic
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Stock Photo Content -->
-                        <div id="stockContent" class="p-6">
-                            <div id="stockSuggestions" class="space-y-4">
-                                <div class="text-center py-8">
-                                    <p class="text-gray-500 text-sm">Generate a post to get photo suggestions</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Branded Graphic Content -->
-                        <div id="brandedContent" class="p-6 hidden">
-                            <div id="brandedGraphic" class="relative rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 h-64 flex items-center justify-center">
-                                <div class="absolute inset-0 dot-pattern opacity-10"></div>
-                                <div class="relative text-center text-white p-8">
-                                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                        <span class="newsec-blue font-bold text-2xl">N</span>
-                                    </div>
-                                    <p class="text-white/80">Generate a post to create graphic</p>
-                                </div>
-                            </div>
-                            <button onclick="downloadGraphic()" class="w-full mt-4 bg-gray-100 text-gray-700 py-2 rounded-xl font-medium hover:bg-gray-200 smooth-transition">
-                                Download Graphic
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Export Options -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow">
-                        <h3 class="font-semibold text-gray-900 mb-4">Export Options</h3>
-                        <div class="space-y-3">
-                            <button class="w-full text-left px-4 py-3 rounded-xl border border-gray-200 hover:border-gray-300 smooth-transition flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
-                                    </svg>
-                                    <span class="text-gray-700">Save as template</span>
-                                </div>
-                            </button>
-                            <button onclick="emailPost()" class="w-full text-left px-4 py-3 rounded-xl border border-gray-200 hover:border-gray-300 smooth-transition flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <span class="text-gray-700">Email to myself</span>
-                                </div>
-                            </button>
-                            <button class="w-full newsec-bg text-white py-3 rounded-xl font-medium hover:opacity-90 smooth-transition flex items-center justify-center space-x-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                                </svg>
-                                <span>Open LinkedIn</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg transform translate-y-full smooth-transition">
-        <div class="flex items-center space-x-3">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span id="toastMessage">Success!</span>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-600">Generating your post...</p>
         </div>
     </div>
 
     <script>
-        // Access control
-        function checkAccess() {
-            const code = document.getElementById('accessCode').value;
-            if (code === 'NEWSEC2025') {
-                document.getElementById('accessModal').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                showToast('Welcome to LinkedIn Post Generator!');
-            } else {
-                document.getElementById('accessCode').classList.add('border-red-500');
-                setTimeout(() => {
-                    document.getElementById('accessCode').classList.remove('border-red-500');
-                }, 1000);
-            }
-        }
-
-        // Tab switching
-        function switchTab(tab) {
-            const stockTab = document.getElementById('stockTab');
-            const brandedTab = document.getElementById('brandedTab');
-            const stockContent = document.getElementById('stockContent');
-            const brandedContent = document.getElementById('brandedContent');
-
-            if (tab === 'stock') {
-                stockTab.classList.add('tab-active', 'text-gray-700');
-                stockTab.classList.remove('text-gray-500');
-                brandedTab.classList.remove('tab-active', 'text-gray-700');
-                brandedTab.classList.add('text-gray-500');
-                stockContent.classList.remove('hidden');
-                brandedContent.classList.add('hidden');
-            } else {
-                brandedTab.classList.add('tab-active', 'text-gray-700');
-                brandedTab.classList.remove('text-gray-500');
-                stockTab.classList.remove('tab-active', 'text-gray-700');
-                stockTab.classList.add('text-gray-500');
-                brandedContent.classList.remove('hidden');
-                stockContent.classList.add('hidden');
-            }
-        }
-
-        // Toast notification
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.remove('translate-y-full');
-            setTimeout(() => {
-                toast.classList.add('translate-y-full');
-            }, 3000);
-        }
-
-        // Word counter
-        document.getElementById('emailContent').addEventListener('input', function() {
-            const words = this.value.trim().split(/\s+/).filter(word => word.length > 0).length;
-            this.parentElement.querySelector('.text-gray-500').textContent = `${words} words`;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Word counter
+            document.getElementById('contentInput').addEventListener('input', updateWordCount);
+            
+            // Post editor
+            document.getElementById('postEditor').addEventListener('input', updatePostStats);
         });
 
-        // Clear input
-        function clearInput() {
-            document.getElementById('emailContent').value = '';
-            document.getElementById('emailContent').dispatchEvent(new Event('input'));
+        // Word count
+        function updateWordCount() {
+            const content = document.getElementById('contentInput').value;
+            const words = content.trim().split(/\s+/).filter(word => word.length > 0).length;
+            document.getElementById('wordCount').textContent = words;
         }
 
-        // Load example
-        function loadExample() {
-            const example = "We are excited to announce that Newsec has successfully completed the acquisition of a prime office building in central Stockholm. This 15,000 sqm property represents our continued commitment to sustainable real estate development in the Nordic region. The building will undergo extensive renovations to achieve LEED Gold certification.";
-            document.getElementById('emailContent').value = example;
-            document.getElementById('emailContent').dispatchEvent(new Event('input'));
-            showToast('Example content loaded');
-        }
-
-        // Generate post - NOW WITH REAL API INTEGRATION
+        // Generate Post
         async function generatePost() {
-            const content = document.getElementById('emailContent').value;
-            if (!content) {
-                showToast('Please enter some content first');
+            const content = document.getElementById('contentInput').value;
+            if (!content.trim()) {
+                alert('Please enter some content first');
                 return;
             }
 
-            const postDiv = document.getElementById('generatedPost');
-            postDiv.innerHTML = `
-                <div class="flex items-center justify-center h-64">
-                    <div class="text-center">
-                        <div class="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-                        <p class="text-gray-500">Generating your LinkedIn post...</p>
-                    </div>
-                </div>
-            `;
+            // Show loading
+            document.getElementById('loadingOverlay').classList.remove('hidden');
 
-            // Update progress
-            document.getElementById('step2').classList.remove('bg-gray-200', 'text-gray-400');
-            document.getElementById('step2').classList.add('newsec-bg', 'text-white');
+            // Get configuration
+            const language = document.getElementById('language').value;
+            const postType = document.getElementById('postType').value;
+            const style = document.querySelector('input[name="style"]:checked').value;
 
             try {
-                // Call the API endpoint
                 const response = await fetch('/api/generate-post', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ content: content })
+                    body: JSON.stringify({
+                        content,
+                        language,
+                        postType,
+                        style
+                    })
                 });
 
                 const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'Failed to generate post');
+                
+                if (data.success) {
+                    // Move to step 2
+                    showStep2();
+                    
+                    // Display generated post
+                    document.getElementById('postEditor').innerHTML = data.post.full;
+                    updatePostStats();
+                } else {
+                    throw new Error(data.message);
                 }
-
-                // Use the real generated post
-                displayPost(data.post);
-                updateStats(data.post);
-                generateVisuals(data.post);
-                showToast('Post generated successfully!');
-                
             } catch (error) {
-                console.error('Error generating post:', error);
-                showToast('Error generating post. Using demo mode.');
+                console.error('Error:', error);
+                // Fallback to demo content
+                showStep2();
+                const demoPost = `🏢 Exciting news from Newsec!
+
+We're thrilled to announce our latest sustainable real estate development in Stockholm. This project represents our commitment to creating value while protecting our environment.
+
+Key highlights:
+✅ LEED Gold certification target
+✅ 15,000 sqm of modern office space
+✅ Carbon-neutral operations by 2025
+
+At Newsec, we believe the future of real estate lies in sustainable innovation. What's your vision for sustainable urban development?
+
+#RealEstate #Sustainability #Innovation #Newsec #GreenBuilding`;
                 
-                // Fallback to demo mode
-                const post = createLinkedInPost(content);
-                displayPost(post);
-                updateStats(post);
-                generateVisuals(post);
+                document.getElementById('postEditor').innerHTML = demoPost;
+                updatePostStats();
+            } finally {
+                document.getElementById('loadingOverlay').classList.add('hidden');
             }
         }
 
-        // Create LinkedIn post (DEMO MODE FALLBACK)
-        function createLinkedInPost(content) {
-            // Extract key points
-            const sentences = content.split('.').filter(s => s.trim());
-            const firstSentence = sentences[0] || '';
+        // Show Step 2
+        function showStep2() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
             
-            // Generate post
-            const hook = "🏢 Exciting developments at Newsec!";
-            const body = `
-
-${firstSentence.trim()}.
-
-This achievement showcases our dedication to:
-✓ Sustainable real estate development
-✓ Creating value for our stakeholders
-✓ Leading innovation in the Nordic market
-
-At Newsec, we're not just transforming buildings – we're shaping the future of sustainable urban environments.`;
-            
-            const cta = `
-
-What role do you think sustainable buildings play in creating better cities? Share your thoughts below! 👇`;
-            
-            const hashtags = `
-
-#RealEstate #Sustainability #NordicRealEstate #Newsec #PropTech #GreenBuilding`;
-
-            return {
-                full: hook + body + cta + hashtags,
-                hook: hook,
-                body: body,
-                cta: cta,
-                hashtags: hashtags
-            };
-        }
-
-        // Display post - UPDATED TO HANDLE API RESPONSE
-        function displayPost(post) {
-            const postDiv = document.getElementById('generatedPost');
-            
-            // Handle both API response and demo format
-            const fullText = post.full || (post.hook + post.body + post.cta + post.hashtags);
-            
-            postDiv.innerHTML = `
-                <div class="space-y-3 text-gray-700 whitespace-pre-line">
-                    ${fullText}
-                </div>
-            `;
-            
-            document.getElementById('postStats').classList.remove('hidden');
-        }
-
-        // Update stats
-        function updateStats(post) {
-            const fullText = post.full || (post.hook + post.body + post.cta + post.hashtags);
-            const charCount = fullText.length;
-            const hashtagCount = (fullText.match(/#/g) || []).length;
-            const emojiCount = (fullText.match(/[\u{1F300}-\u{1F9FF}]/gu) || []).length;
-            
-            document.getElementById('charCount').textContent = charCount;
-            document.getElementById('hashtagCount').textContent = hashtagCount;
-            document.getElementById('emojiCount').textContent = emojiCount;
-        }
-
-        // Generate visuals
-        function generateVisuals(post) {
-            // Stock suggestions
-            const suggestions = [
-                {
-                    title: "Modern sustainable office building",
-                    description: "Glass facade with green elements, representing innovation and sustainability",
-                    tags: ["office", "sustainable", "modern", "architecture"]
-                },
-                {
-                    title: "Team collaboration in bright space",
-                    description: "Professionals working together in a modern, well-lit environment",
-                    tags: ["teamwork", "office", "collaboration", "professional"]
-                },
-                {
-                    title: "Nordic cityscape at golden hour",
-                    description: "Urban skyline showcasing growth and development opportunities",
-                    tags: ["city", "skyline", "nordic", "urban"]
-                }
-            ];
-            
-            const stockDiv = document.getElementById('stockSuggestions');
-            stockDiv.innerHTML = suggestions.map(s => `
-                <div class="border border-gray-200 rounded-xl p-4 hover:border-gray-300 smooth-transition cursor-pointer">
-                    <h4 class="font-medium text-gray-900 mb-1">${s.title}</h4>
-                    <p class="text-sm text-gray-600 mb-2">${s.description}</p>
-                    <div class="flex flex-wrap gap-1">
-                        ${s.tags.map(tag => `<span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md">${tag}</span>`).join('')}
-                    </div>
-                </div>
-            `).join('');
-
-            // Branded graphic
-            const headline = post.hook ? post.hook.replace(/[🏢!]/g, '').trim() : 'Transforming Real Estate';
-            const brandedDiv = document.getElementById('brandedGraphic');
-            brandedDiv.innerHTML = `
-                <div class="absolute inset-0 dot-pattern opacity-10"></div>
-                <div class="relative text-center text-white p-8 z-10">
-                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
-                        <span class="newsec-blue font-bold text-3xl">N</span>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-3">${headline}</h3>
-                    <p class="text-blue-100">Transforming Real Estate</p>
-                </div>
-            `;
-
             // Update progress
-            document.getElementById('step3').classList.remove('bg-gray-200', 'text-gray-400');
-            document.getElementById('step3').classList.add('newsec-bg', 'text-white');
+            document.getElementById('step1Circle').classList.remove('step-active');
+            document.getElementById('step1Circle').classList.add('step-complete');
+            document.getElementById('step2Circle').classList.remove('step-inactive');
+            document.getElementById('step2Circle').classList.add('step-active');
         }
 
-        // Copy post
-        function copyPost() {
-            const postText = document.getElementById('generatedPost').innerText;
-            navigator.clipboard.writeText(postText);
-            showToast('Post copied to clipboard!');
+        // Update post statistics
+        function updatePostStats() {
+            const content = document.getElementById('postEditor').innerText;
+            
+            // Character count
+            document.getElementById('charCount').textContent = content.length;
+            
+            // Hashtag count
+            const hashtags = (content.match(/#\w+/g) || []).length;
+            document.getElementById('hashtagCount').textContent = hashtags;
+            
+            // Emoji count
+            const emojis = (content.match(/[\u{1F300}-\u{1F9FF}]/gu) || []).length;
+            document.getElementById('emojiCount').textContent = emojis;
         }
 
-        // Regenerate post
-        function regeneratePost() {
-            generatePost();
+        // Text formatting
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('postEditor').focus();
+        }
+
+        // Add emoji
+        function addEmoji() {
+            const emojis = ['👍', '💡', '🚀', '✨', '💪', '🎯', '✅', '📈', '🌟', '💼'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            document.execCommand('insertText', false, emoji);
+            document.getElementById('postEditor').focus();
+            updatePostStats();
+        }
+
+        // Add hashtag
+        function addHashtag() {
+            const hashtags = ['#RealEstate', '#Sustainability', '#Innovation', '#Newsec', '#PropTech', 
+                             '#GreenBuilding', '#NordicRealEstate', '#UrbanDevelopment', '#ESG', '#FutureOfWork'];
+            const hashtag = hashtags[Math.floor(Math.random() * hashtags.length)];
+            document.execCommand('insertText', false, ' ' + hashtag);
+            document.getElementById('postEditor').focus();
+            updatePostStats();
+        }
+
+        // Image tab switching
+        function switchImageTab(tab) {
+            // Hide all tabs
+            document.getElementById('stockTab').classList.add('hidden');
+            document.getElementById('aiTab').classList.add('hidden');
+            document.getElementById('uploadTab').classList.add('hidden');
+            
+            // Show selected tab
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
+            
+            // Update tab buttons
+            const buttons = document.querySelectorAll('.flex.border-b button');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-b-2', 'border-blue-500', 'font-medium');
+                btn.classList.add('text-gray-500');
+            });
+            event.target.classList.add('border-b-2', 'border-blue-500', 'font-medium');
+            event.target.classList.remove('text-gray-500');
+        }
+
+        // Select image
+        function selectImage(element, imageId) {
+            // Remove previous selection
+            document.querySelectorAll('.image-option').forEach(img => {
+                img.classList.remove('selected');
+            });
+            
+            // Add selection
+            element.classList.add('selected');
+            
+            // Show preview in post
+            const imgSrc = element.querySelector('img').src;
+            const preview = document.getElementById('selectedImagePreview');
+            preview.querySelector('img').src = imgSrc;
+            preview.classList.remove('hidden');
+        }
+
+        // Generate AI Image
+        async function generateAIImage() {
+            const prompt = document.getElementById('aiImagePrompt').value;
+            if (!prompt) {
+                alert('Please describe the image you want');
+                return;
+            }
+
+            const aiImagesDiv = document.getElementById('aiGeneratedImages');
+            aiImagesDiv.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+
+            try {
+                const response = await fetch('/api/generate-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt + ' professional real estate, Newsec brand, modern Nordic style, blue color scheme',
+                        n: 4
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.images) {
+                    aiImagesDiv.innerHTML = '';
+                    data.images.forEach((imgUrl, index) => {
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = 'image-option';
+                        imgDiv.onclick = function() { selectImage(this, 'ai' + index); };
+                        imgDiv.innerHTML = `<img src="${imgUrl}" alt="AI generated" class="w-full h-full object-cover">`;
+                        aiImagesDiv.appendChild(imgDiv);
+                    });
+                } else {
+                    throw new Error('Failed to generate images');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Demo fallback
+                aiImagesDiv.innerHTML = `
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
+                        <p class="text-sm">AI image generation requires API setup</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('selectedImagePreview');
+                    preview.querySelector('img').src = e.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         // Chat functionality
@@ -681,67 +741,117 @@ What role do you think sustainable buildings play in creating better cities? Sha
             
             // Add user message
             chatDiv.innerHTML += `
-                <div class="flex items-start space-x-3 fade-in">
-                    <div class="w-8 h-8 newsec-bg rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span class="text-white text-xs font-medium">You</span>
-                    </div>
-                    <div class="flex-1 bg-blue-50 rounded-xl p-3">
-                        <p class="text-sm text-gray-700">${message}</p>
-                    </div>
+                <div class="bg-blue-100 rounded-lg p-3 ml-auto max-w-xs">
+                    <p class="text-sm">${message}</p>
                 </div>
             `;
 
             input.value = '';
             chatDiv.scrollTop = chatDiv.scrollHeight;
 
-            // Simulate AI response (in production, this would call an API)
-            setTimeout(() => {
+            // Add AI typing indicator
+            chatDiv.innerHTML += `
+                <div id="typing" class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                    <p class="text-sm">AI is thinking...</p>
+                </div>
+            `;
+
+            try {
+                const currentPost = document.getElementById('postEditor').innerHTML;
+                
+                const response = await fetch('/api/refine-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        post: currentPost,
+                        instruction: message
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                document.getElementById('typing').remove();
+                
+                if (data.success) {
+                    // Update post
+                    document.getElementById('postEditor').innerHTML = data.refinedPost;
+                    updatePostStats();
+                    
+                    // Add AI response
+                    chatDiv.innerHTML += `
+                        <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                            <p class="text-sm">Done! I've updated your post as requested.</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Failed to refine post');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('typing').remove();
+                
+                // Demo response
                 chatDiv.innerHTML += `
-                    <div class="flex items-start space-x-3 fade-in">
-                        <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1 bg-gray-50 rounded-xl p-3">
-                            <p class="text-sm text-gray-700">I'll help you refine that! Let me update the post for you...</p>
-                        </div>
+                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                        <p class="text-sm">I've updated your post! (Demo mode - API not connected)</p>
                     </div>
                 `;
-                chatDiv.scrollTop = chatDiv.scrollHeight;
-            }, 1000);
+            }
+            
+            chatDiv.scrollTop = chatDiv.scrollHeight;
         }
 
-        // Download graphic
-        function downloadGraphic() {
-            const graphic = document.getElementById('brandedGraphic');
-            html2canvas(graphic, {
-                backgroundColor: null,
-                scale: 2
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'newsec-linkedin-graphic.png';
-                link.href = canvas.toDataURL();
-                link.click();
-                showToast('Graphic downloaded!');
+        // Copy post
+        function copyPost() {
+            const postText = document.getElementById('postEditor').innerText;
+            navigator.clipboard.writeText(postText).then(() => {
+                alert('Post copied to clipboard!');
             });
         }
 
-        // Email post
-        function emailPost() {
-            const post = document.getElementById('generatedPost').innerText;
-            const subject = 'Your LinkedIn Post is Ready!';
-            const body = encodeURIComponent(`Hi,\n\nHere's your generated LinkedIn post:\n\n${post}\n\nBest regards,\nNewsec LinkedIn Post Generator`);
-            window.open(`mailto:?subject=${subject}&body=${body}`);
+        // Download post
+        function downloadPost() {
+            const postText = document.getElementById('postEditor').innerText;
+            const blob = new Blob([postText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'linkedin-post.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         }
 
-        // Enter key support
-        document.getElementById('accessCode').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkAccess();
-        });
+        // Share to LinkedIn
+        function shareToLinkedIn() {
+            window.open('https://www.linkedin.com/feed/', '_blank');
+        }
 
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChat();
+        // Settings modal (placeholder)
+        function showSettings() {
+            alert('Settings panel coming soon! Here you can configure API keys, default languages, and more.');
+        }
+
+        // Handle style upload
+        document.getElementById('styleUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const uploadedDiv = document.getElementById('uploadedStyles');
+            
+            for (let file of files) {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'flex items-center justify-between p-2 bg-gray-50 rounded';
+                fileDiv.innerHTML = `
+                    <span class="text-sm text-gray-700">${file.name}</span>
+                    <button class="text-red-500 text-sm" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                uploadedDiv.appendChild(fileDiv);
+            }
         });
     </script>
 </body>
