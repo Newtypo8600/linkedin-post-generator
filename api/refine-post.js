@@ -5,7 +5,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { post, instruction } = req.body;
+    const { post, instruction, language } = req.body;
+
+    // Language instructions
+    const languageMap = {
+      en: "English",
+      da: "Danish (Dansk)",
+      sv: "Swedish (Svenska)",
+      fi: "Finnish (Suomi)"
+    };
 
     const systemPrompt = `You are a LinkedIn content refinement assistant for Newsec. 
     Your job is to modify existing LinkedIn posts based on user instructions while maintaining:
@@ -13,17 +21,18 @@ export default async function handler(req, res) {
     - The original message's core meaning
     - Proper LinkedIn formatting
     - Engagement best practices
+    - The ${languageMap[language] || 'English'} language (IMPORTANT: Always respond in ${languageMap[language] || 'English'})
     
     Common refinements include:
     - Making posts shorter/longer
     - Adding/removing hashtags
     - Changing tone (more formal/casual)
     - Adding emojis
-    - Translating to different languages
     - Making more engaging
     - Adding statistics or data points
     - Improving call-to-action
     
+    CRITICAL: The refined post MUST be in ${languageMap[language] || 'English'}, regardless of what language the instruction is in.
     Always preserve any HTML formatting tags in the post.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -41,7 +50,7 @@ export default async function handler(req, res) {
           },
           {
             role: 'user',
-            content: `Current post: ${post}\n\nInstruction: ${instruction}`
+            content: `Current post: ${post}\n\nInstruction: ${instruction}\n\nRemember to keep the response in ${languageMap[language] || 'English'}.`
           }
         ],
         temperature: 0.7,
